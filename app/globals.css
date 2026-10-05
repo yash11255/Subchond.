@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+:root {
+  /* Backgrounds */
+  --black: #F7FAF9;          /* page background: soft clinical off-white with a faint green tint */
+  --charcoal: #FFFFFF;       /* cards */
+  --deep-charcoal: #E8F1EF;  /* alternate sections: pale mint */
+  --ivory: #FFF8EE;          /* warm cream for highlight sections */
+  --warm-white: #FFFDF9;
+
+  /* Text */
+  --dark-text: #1B2B2A;      /* deep green-black, softer than pure black */
+  --light-text: #1B2B2A;
+  --muted-text: #4B5F5D;
+
+  /* Brand */
+  --accent: #0F766E;         /* teal: trust, health, calm */
+  --accent-hover: #115E59;
+
+  /* Call-to-action (Book Appointment, WhatsApp, Call) */
+  --gold: #C2410C;           /* terracotta saffron: white text passes contrast */
+  --gold-light: #EA580C;
+
+  /* Alerts / emergency */
+  --maroon: #9F1239;
+
+  /* Lines */
+  --line-dark: rgba(15, 118, 110, 0.18);
+  --line-light: rgba(15, 118, 110, 0.18);
+}
+
+/* Global Font Setup: Eye-soothing clinical light theme for older Indian audience */
+html {
+  scroll-behavior: auto;
+  background-color: var(--black);
+  color: var(--dark-text);
+  font-family: var(--font-inter), var(--font-outfit), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-inter), var(--font-outfit), sans-serif;
+  font-weight: 400;
+  background-color: var(--black);
+  color: var(--dark-text);
+  font-size: 16px;
+}
+
+/* Headings with strong weight and high readability */
+h1, h2, h3, h4, h5, h6,
+.font-serif-display,
+.font-sans-clean {
+  font-family: var(--font-outfit), var(--font-inter), sans-serif !important;
+}
+
+.font-serif-display {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Color Helper Utilities */
+.bg-theme-black { background-color: var(--black); }
+.bg-theme-charcoal { background-color: var(--charcoal); }
+.bg-theme-deep-charcoal { background-color: var(--deep-charcoal); }
+.bg-theme-ivory { background-color: var(--ivory); }
+.bg-theme-warm-white { background-color: var(--warm-white); }
+.bg-theme-accent { background-color: var(--accent); }
+
+.text-theme-dark { color: var(--dark-text); }
+.text-theme-light { color: var(--light-text); }
+.text-theme-muted { color: var(--muted-text); }
+.text-theme-accent { color: var(--accent); }
+.text-theme-ivory { color: var(--ivory); }
+
+.border-theme-dark-line { border-color: var(--line-dark); }
+.border-theme-light-line { border-color: var(--line-light); }
+
+/* Selection style */
+::selection {
+  background-color: var(--accent);
+  color: #FFFFFF;
+}
