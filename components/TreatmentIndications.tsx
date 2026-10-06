@@ -45,37 +45,35 @@ export const TREATMENT_OPTIONS: TreatmentOption[] = [
     preservesNaturalJoint: true,
     // confirm: add this image. Suggestion: the procedure, or an MRI showing a bone marrow lesion.
     image: {
-      src: "/assets/treatment-subchondral.jpg",
-      alt: "Dr. Bora reviewing an MRI that shows a bone marrow lesion in the knee",
+      src: "/assets/knee-bml-mri.png",
+      alt: "MRI showing subchondral bone marrow edema and bone stress lesions in the knee",
     },
   },
   {
     id: "arthroscopy-ligament",
     badge: "Sports medicine",
-    title: "Keyhole knee arthroscopy",
-    subtitle: "ACL, meniscus and cartilage repair",
-    tagline: "Repair torn or damaged tissue through small incisions.",
+    title: "Keyhole knee arthroscopy & ACL care",
+    subtitle: "ACL, meniscus repair & biological joint bed preservation",
+    tagline: "Repair ligaments with biological augmentation for lasting sports longevity.",
     description:
-      "Arthroscopy uses a small camera and fine instruments passed through keyhole incisions. It is used to repair meniscus tears, reconstruct torn ACL or PCL ligaments, and treat focal cartilage damage.",
+      "Dr. Manu Bora combines precision arthroscopy with subchondral BMC biological augmentation. We reconstruct torn ACL ligaments, repair menisci, and treat underlying subchondral bone bruises to eliminate chronic ache and prevent post-traumatic osteoarthritis.",
     whoItIsFor: [
-      "Sports injuries with a meniscus tear or an unstable ligament",
-      "Focal cartilage damage or loose fragments in the joint",
-      "A knee that catches, locks or gives way",
-      "Athletes and active people who need a stable knee",
+      "ACL tears with accompanying subchondral bone bruises on MRI",
+      "Sports injuries with meniscus tears or rotational instability",
+      "Athletes seeking accelerated biological graft osteointegration",
+      "A knee that catches, locks, or buckles during activity",
     ],
     keyBenefits: [
-      "Small incisions with less damage to surrounding tissue",
-      "Meniscus repaired rather than removed whenever repair is possible",
-      "Restores stability and confidence in movement",
-      "Usually day-care or a short stay",
+      "Biological augmentation accelerates tendon-to-bone tunnel healing",
+      "Meniscus repaired rather than resected whenever clinically feasible",
+      "Targets the hidden bone bruise to halt post-traumatic arthritis",
+      "Minimally invasive keyhole day-care procedure",
     ],
-    // confirm: ACL reconstruction often takes longer to return to sport than a meniscus repair
-    recoveryTimeline: "Guided movement starts early; return to sport in 3–6 months",
+    recoveryTimeline: "Guided weight-bearing starts early; progressive return to sport in 3–6 months",
     preservesNaturalJoint: true,
-    // confirm: add this image. Suggestion: arthroscopic view of the knee, or an arthroscopy in progress.
     image: {
-      src: "/assets/treatment-arthroscopy.jpg",
-      alt: "Arthroscopic keyhole surgery on a knee",
+      src: "/assets/ot/ot-03.webp",
+      alt: "Dr. Manu Bora performing precision arthroscopic knee surgery in sterile OT",
     },
   },
   {
@@ -100,10 +98,9 @@ export const TREATMENT_OPTIONS: TreatmentOption[] = [
     ],
     recoveryTimeline: "Hospital stay of 2–4 days; walking progresses over 1–2 weeks",
     preservesNaturalJoint: false,
-    // confirm: add this image. Suggestion: a knee implant, or a post-replacement X-ray.
     image: {
-      src: "/assets/treatment-replacement.jpg",
-      alt: "Knee replacement implant shown on an X-ray",
+      src: "/assets/knee-oa-xray.png",
+      alt: "Knee osteoarthritis diagnostic radiograph showing joint space evaluation",
     },
   },
 ];

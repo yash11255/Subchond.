@@ -18,6 +18,10 @@ type Slide =
 
 const slides: Slide[] = [
   { kind: "photo", src: "/dr-manu-bora.jpg", alt: "Dr. Manu Bora, Orthopaedic Surgeon and Joint Preservation Specialist" },
+  { kind: "photo", src: "/images/dr2.png", alt: "Dr. Manu Bora in patient consultation" },
+  { kind: "photo", src: "/images/dr3.png", alt: "Dr. Manu Bora evaluating MRI scan for subchondral lesions" },
+  { kind: "photo", src: "/assets/ot/ot-03.webp", alt: "Dr. Manu Bora performing arthroscopic joint surgery in OT" },
+  { kind: "photo", src: "/assets/ot/ot-07.webp", alt: "Dr. Manu Bora guiding high-definition surgical cameras in OT" },
   { kind: "channel" },
 ];
 
@@ -42,19 +46,24 @@ const locations = ["Gurugram", "New Delhi", "Mumbai"];
 // Real videos from youtube.com/@drmanubora
 const videos = [
   {
-    id: "wjfw3YFhbHI",
-    title: "Can Knee Osteoarthritis Be Treated Without Surgery?",
-    meta: "Adipose Stem Cell / Clinician Explainer",
+    id: "wnXqPbEH1V4",
+    title: "Subchondral BMC Joint Preservation Protocol",
+    meta: "Clinical Protocol / Dr. Manu Bora",
   },
   {
-    id: "jCRPcKirJyw",
-    title: "Avoid Knee Replacement — Best Treatment Options for Knee OA",
-    meta: "Joint Preservation / Approach",
+    id: "IXA1DOaJk7w",
+    title: "ACL Reconstruction, Bone Bruises & Fast Recovery",
+    meta: "Sports Medicine / Graft Osteointegration",
+  },
+  {
+    id: "wjfw3YFhbHI",
+    title: "Can Knee Osteoarthritis Be Treated Without Surgery?",
+    meta: "Adipose Stem Cell / Joint Preservation",
   },
   {
     id: "C3zfD3vMhrU",
-    title: "Knee Osteoarthritis: How to Heal Without Surgery?",
-    meta: "Subchondral BMC / 15-Year Study",
+    title: "Knee Osteoarthritis: 15-Year Long-Term Outcomes",
+    meta: "Subchondral BMC / Clinical Evidence",
   },
 ];
 

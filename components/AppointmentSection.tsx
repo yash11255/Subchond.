@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Calendar, Phone, Mail, MapPin, Send, CheckCircle2, ShieldAlert } from "lucide-react";
+import Image from "next/image";
+import { Calendar, Phone, Mail, MapPin, Send, CheckCircle2, ShieldAlert, Award, Star } from "lucide-react";
 import SectionEyebrow from "./SectionEyebrow";
 
 export default function AppointmentSection() {
@@ -25,6 +26,7 @@ export default function AppointmentSection() {
       id="contact-appointment"
       className="relative w-full bg-[#E8F1EF] text-[#1B2B2A] py-20 md:py-32 border-b border-[#0F766E]/20"
     >
+      <div id="assess" className="sr-only" aria-hidden="true" />
       <div className="max-w-[1440px] mx-auto w-full px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative z-10">
         
         {/* Left Column: Info & Trust */}
@@ -38,6 +40,43 @@ export default function AppointmentSection() {
             <p className="text-base sm:text-lg font-sans-clean font-medium text-[#4B5F5D] leading-relaxed">
               Book a personal consultation or request a second opinion on your MRI scan with Dr. Manu Bora at our centres in Gurugram, New Delhi, or Mumbai.
             </p>
+          </div>
+
+          {/* Dr. Manu Bora Consultation Guarantee Card */}
+          <div className="p-5 rounded-2xl bg-[#FFFFFF] border border-[#0F766E]/20 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-5">
+            <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 rounded-2xl overflow-hidden border-2 border-[#0F766E]/30 shadow-md">
+              <Image
+                src="/dr-manu-bora.jpg"
+                alt="Dr. Manu Bora, Orthopaedic Surgeon and Joint Preservation Specialist"
+                fill
+                sizes="96px"
+                className="object-cover object-top"
+              />
+            </div>
+            <div className="space-y-1 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-2">
+                <span className="font-serif-display font-bold text-lg text-[#1B2B2A]">
+                  Dr. Manu Bora
+                </span>
+                <span className="bg-[#0F766E]/10 text-[#0F766E] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">
+                  Lead Surgeon
+                </span>
+              </div>
+              <p className="text-xs text-[#0F766E] font-semibold">
+                MS Orthopaedics · Arthrex Master Instructor · Sports Injury Specialist
+              </p>
+              <p className="text-xs text-[#4B5F5D] leading-relaxed pt-1">
+                Every consultation and MRI scan is reviewed directly by Dr. Manu Bora. You receive an honest, unbiased assessment whether your natural knee can be preserved.
+              </p>
+              <div className="flex items-center justify-center sm:justify-start gap-3 pt-1 text-[11px] font-bold text-[#C2410C]">
+                <span className="flex items-center gap-1">
+                  <Star className="w-3.5 h-3.5 fill-[#C2410C]" />
+                  4.9★ (2,400+ Patients)
+                </span>
+                <span className="text-[#4B5F5D]/30">·</span>
+                <span className="text-[#0F766E]">10,000+ Surgeries</span>
+              </div>
+            </div>
           </div>
 
           {/* Clinical Centres */}

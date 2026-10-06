@@ -5,9 +5,11 @@ import ImagingSection from "@/components/ImagingSection";
 import DoctorIntro from "@/components/DoctorIntro";
 import TreatmentIndications from "@/components/TreatmentIndications";
 import ClinicalApproach from "@/components/ClinicalApproach";
+import AclSubchondralSection from "@/components/AclSubchondralSection";
 import ProcedureSection from "@/components/ProcedureSection";
 import OtGallerySection from "@/components/OtGallerySection";
 import AnatomySection from "@/components/AnatomySection";
+import ExpectationsSection from "@/components/ExpectationsSection";
 import ResearchSection from "@/components/ResearchSection";
 import PatientStoriesSection from "@/components/PatientStoriesSection";
 import FaqSection from "@/components/FaqSection";
@@ -41,13 +43,19 @@ export default function Home() {
       {/* 06 — CLINICAL APPROACH PROTOCOL */}
       <ClinicalApproach />
 
+      {/* 07 — ACL & SPORTS INJURY PRESERVATION */}
+      <AclSubchondralSection />
+
       {/* 08 — OPERATING THEATRE & SURGICAL GALLERY */}
       <OtGallerySection />
 
-      {/* 09 — PATIENT JOURNEYS & ANATOMY RECOVERY */}
+      {/* 09 — THE PROGRAMME & CARE TEAM */}
       <AnatomySection />
 
-      {/* 09 — RESEARCH & CLINICAL EVIDENCE */}
+      {/* 10 — EXPECTATIONS & RECOVERY TIMELINE */}
+      <ExpectationsSection />
+
+      {/* 11 — RESEARCH & CLINICAL EVIDENCE */}
       <ResearchSection />
 
       {/* 10 — PATIENT STORIES & TESTIMONIALS */}
