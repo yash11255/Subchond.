@@ -3,7 +3,6 @@ import TrustBar from "@/components/TrustBar";
 import CartilageSection from "@/components/CartilageSection";
 import ImagingSection from "@/components/ImagingSection";
 import DoctorIntro from "@/components/DoctorIntro";
-import SubchondralScienceSection from "@/components/SubchondralScienceSection";
 import TreatmentIndications from "@/components/TreatmentIndications";
 import ClinicalApproach from "@/components/ClinicalApproach";
 import AclSubchondralSection from "@/components/AclSubchondralSection";
@@ -35,14 +34,17 @@ export default function Home() {
       {/* 03 — DIAGNOSTIC IMAGING (X-RAY VS MRI) */}
       <ImagingSection />
 
-      {/* 04 — WHAT IS A SUBCHONDRAL INJECTION (BMC & PRP SCIENCE) */}
-      <SubchondralScienceSection />
+      {/* 04 — DOCTOR PROFILE & AUTHORITY */}
+
 
       {/* 05 — TREATMENT INDICATIONS & CARE PATHS */}
       <TreatmentIndications />
 
       {/* 06 — CLINICAL APPROACH PROTOCOL */}
       <ClinicalApproach />
+
+      {/* 06.5 — HOW A SUBCHONDRAL INJECTION WORKS (SCROLL ANIMATION) */}
+      <ProcedureSection />
 
       {/* 07 — ACL & SPORTS INJURY PRESERVATION */}
       <AclSubchondralSection />

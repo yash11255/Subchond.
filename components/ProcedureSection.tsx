@@ -1,235 +1,492 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Play } from "lucide-react";
-import SectionEyebrow from "./SectionEyebrow";
+import React, { useId, useRef, useState } from "react";
+import {
+  motion,
+  MotionValue,
+  useMotionValue,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 
-interface ProcedureVideo {
-  id: string;
-  stage: string;
-  title: string;
-  tags: [string, string];
-  duration: string;
-  poster: string;
-  youtubeId?: string;
+/* ------------------------------------------------------------------ */
+/* Content                                                             */
+/* confirm: review every step with Dr. Bora. In particular, the        */
+/* guidance method and the "stays beneath the cartilage" wording.      */
+/* ------------------------------------------------------------------ */
+
+const STEPS = [
+  {
+    title: "Plan the target",
+    description:
+      "Your imaging shows where the bone marrow lesion sits in the knee, in the bone just beneath the cartilage. That area becomes the target.",
+    center: 0.1, // progress at which this step is "in view"
+  },
+  {
+    title: "Guide the needle",
+    description:
+      "A fine needle is guided through the bone toward the target. It stops beneath the cartilage and does not enter the joint space.",
+    center: 0.43,
+  },
+  {
+    title: "Place the substance",
+    description:
+      "Platelet-rich plasma (PRP) or bone marrow concentrate is placed directly into the bone beneath the cartilage, at the site of the lesion.",
+    center: 0.69,
+  },
+  {
+    title: "Withdraw and recover",
+    description:
+      "The needle is removed and the substance stays in the bone. You then follow the mobility and load instructions you are given.",
+    center: 0.92,
+  },
+];
+
+// Progress where each step begins
+const STEP_STARTS = [0, 0.27, 0.58, 0.8];
+const stepFromProgress = (p: number) =>
+  STEP_STARTS.reduce((acc, start, i) => (p >= start ? i : acc), 0);
+
+const NAV_OFFSET = 72; // px: height of your fixed navbar plus a little air
+
+/* ------------------------------------------------------------------ */
+/* Intro text, used above the stage (mobile) and inside it (desktop)    */
+/* ------------------------------------------------------------------ */
+
+function Intro({ hint }: { hint: boolean }) {
+  return (
+    <div className="space-y-4">
+      <span className="inline-block rounded-full bg-[#DDF1E8] px-4 py-1.5 text-sm font-semibold uppercase tracking-wide text-[#2F7D5B]">
+        The procedure
+      </span>
+      <h2 className="font-serif-display text-4xl font-bold leading-[1.1] tracking-tight">
+        How a subchondral injection works
+      </h2>
+      <p className="max-w-[56ch] text-base leading-relaxed text-[#3F5452]">
+        A subchondral injection is a minimally invasive treatment that places healing substances
+        such as platelet-rich plasma (PRP) or bone marrow concentrate directly into the bone just
+        beneath a joint&rsquo;s cartilage.
+      </p>
+      {hint && <p className="text-sm font-medium text-[#0F766E]">Scroll to follow the procedure, step by step.</p>}
+    </div>
+  );
 }
 
-const PROCEDURE_VIDEOS: ProcedureVideo[] = [
-  {
-    id: "before",
-    stage: "Before",
-    title: "Understanding the problem & imaging",
-    tags: ["Orthopaedic", "MRI scan"],
-    duration: "02:18",
-    poster: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80",
-    youtubeId: "jCRPcKirJyw",
-  },
-  {
-    id: "during",
-    stage: "During",
-    title: "How the precision treatment is performed",
-    tags: ["Orthopaedic", "Procedure"],
-    duration: "04:32",
-    poster: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=800&q=80",
-    youtubeId: "IXA1DOaJk7w",
-  },
-  {
-    id: "after",
-    stage: "After",
-    title: "Rehabilitation and return to active life",
-    tags: ["Rehabilitation", "Recovery"],
-    duration: "03:06",
-    poster: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
-    youtubeId: "PE63cvSYcFQ",
-  },
-];
+/* ------------------------------------------------------------------ */
+/* Illustration, driven by progress p (0..1)                            */
+/*   0 to 0.27   whole knee, target area highlighted, then zooms in     */
+/*   0.27 to 1   close-up of the bone beneath the cartilage             */
+/* ------------------------------------------------------------------ */
 
-const PROCEDURE_STILLS = [
-  { label: "Sterile preparation at the knee", image: "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=600&q=80" },
-  { label: "Preparing the injection", image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80" },
-  { label: "Prepared sample", image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80" },
-  { label: "Operating theatre team", image: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80" },
-  { label: "Sample preparation", image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80" },
-  { label: "Imaging-assisted set-up", image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=600&q=80" },
-];
+function Illustration({ p, step }: { p: MotionValue<number>; step: number }) {
+  const uid = useId().replace(/:/g, "");
 
-const PATIENT_VOICES: { quote: string; attribution?: string }[] = [
-  { quote: "Practical, professional, insightful care and recovery.", attribution: "Verified Patient" },
-  { quote: "Understanding the whole joint pathology made all the difference in my recovery.", attribution: "Sports Medicine Patient" },
-];
+  // Whole knee zooms toward the target and fades out
+  const ovOpacity = useTransform(p, [0.12, 0.26], [1, 0]);
+  const ovT = useTransform(p, [0.1, 0.27], [0, 1]);
+  const ovScale = useTransform(ovT, (t: number) => 1 + 2.2 * t);
+  const ovX = useTransform([ovT, ovScale], (v: number[]) => v[0] * v[1] * 50);
+  const ovY = useTransform([ovT, ovScale], (v: number[]) => v[0] * v[1] * -42);
 
-export default function ProcedureSection() {
-  const [playingId, setPlayingId] = useState<string | null>(null);
-  const [voiceIndex, setVoiceIndex] = useState(0);
+  // Close-up fades in
+  const detOpacity = useTransform(p, [0.16, 0.27], [0, 1]);
+  const detScale = useTransform(p, [0.16, 0.27], [0.6, 1]);
 
-  const voice = PATIENT_VOICES[voiceIndex];
-  const step = (dir: 1 | -1) =>
-    setVoiceIndex((i) => (i + dir + PATIENT_VOICES.length) % PATIENT_VOICES.length);
+  // Needle advances (0.3 to 0.58), stays, then withdraws (0.8 to 0.97)
+  const needleX = useTransform(p, [0, 0.3, 0.58, 0.8, 0.97, 1], [-330, -330, 0, 0, -330, -330]);
+  const needleOpacity = useTransform(p, [0, 0.3, 0.34, 0.9, 0.97], [0, 0, 1, 1, 0]);
+  // Plunger pushes in while the substance is placed (0.58 to 0.8)
+  const plungerX = useTransform(p, [0.58, 0.8, 1], [0, 55, 55]);
+  const liquidScale = useTransform(p, [0.58, 0.8, 1], [1, 0.24, 0.24]);
+  // The substance spreads through the lesion and stays after the needle leaves
+  const fluidScale = useTransform(p, [0.6, 0.8], [0, 1]);
+  const fluidOpacity = useTransform(p, [0.6, 0.64], [0, 0.9]);
+  const ringOpacity = useTransform(p, [0.27, 0.34, 0.58, 1], [0, 1, 0.6, 0.3]);
+
+  const label =
+    "pointer-events-none absolute -translate-y-1/2 rounded-md bg-white/90 px-2 py-0.5 text-[11px] font-medium text-[#1B2B2A] shadow-sm sm:text-xs";
 
   return (
-    <section id="procedure-watch" className="relative w-full border-t border-b border-[#0F766E]/15 bg-[#E8F1EF] text-[#1B2B2A]">
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px]">
-        {/* ------------------------------ Light panel ------------------------------ */}
-        <div className="bg-[#FAF8F5] text-[#1B2B2A]">
-          <div className="max-w-[1240px] mx-auto px-6 md:px-12 py-14 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
-            {/* Intro */}
-            <div className="lg:col-span-3 space-y-5">
-              <SectionEyebrow text="07 / THE PROCEDURE" darkBg={false} />
-              <h2 className="font-serif-display text-4xl sm:text-5xl uppercase tracking-tight leading-[0.95] font-bold text-[#1B2B2A]">
-                Watch the procedure
-              </h2>
-              <p className="text-sm font-sans-clean font-medium text-[#4B5F5D] leading-relaxed max-w-xs">
-                See how the treatment is performed, from pre-operation to recovery.
-              </p>
-              <a
-                href="#assess"
-                className="group inline-flex items-center gap-3 bg-[#C2410C] text-white px-5 py-3 text-xs font-sans-clean font-bold uppercase tracking-[0.14em] rounded-lg transition-colors duration-300 hover:bg-[#EA580C] shadow-md"
-              >
-                Request Consultation
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-            </div>
+    <div className="relative aspect-[600/460] w-full overflow-hidden rounded-2xl border border-[#1B2B2A]/10 bg-[#F3F8F7] shadow-[0_12px_40px_rgba(27,43,42,0.10)]">
+      <svg
+        viewBox="0 0 600 460"
+        role="img"
+        aria-label="Diagram of a knee, zooming in to the bone beneath the cartilage, where a needle places a substance into a bone marrow lesion"
+        className="absolute inset-0 h-full w-full"
+      >
+        <defs>
+          <pattern id={`${uid}-trab`} width="16" height="16" patternUnits="userSpaceOnUse">
+            <path d="M0 4 Q4 0 8 4 T16 4 M0 12 Q4 8 8 12 T16 12" fill="none" stroke="#D6C6A8" strokeWidth="1" />
+          </pattern>
+          <radialGradient id={`${uid}-lesion`}>
+            <stop offset="0%" stopColor="#F97316" stopOpacity="0.6" />
+            <stop offset="70%" stopColor="#F97316" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#F97316" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id={`${uid}-steel`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#B7C0BF" />
+            <stop offset="100%" stopColor="#7B8785" />
+          </linearGradient>
+        </defs>
 
-            {/* Video cards */}
-            <div className="lg:col-span-9 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {PROCEDURE_VIDEOS.map((v, i) => {
-                const isPlaying = playingId === v.id;
+        {/* ===================== 1. Whole knee (front view) ===================== */}
+        <motion.g style={{ opacity: ovOpacity, x: ovX, y: ovY, scale: ovScale, originX: 0.5, originY: 0.5 }}>
+          {/* invisible box so the zoom pivots on the middle of the drawing */}
+          <rect x="0" y="0" width="600" height="460" fill="transparent" />
 
-                return (
-                  <article
-                    key={v.id}
-                    className="border border-[#0F766E]/20 bg-[#FFFFFF] rounded-xl overflow-hidden shadow-md flex flex-col"
-                  >
-                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-black">
-                      {isPlaying ? (
-                        <iframe
-                          src={`https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&rel=0`}
-                          title={v.title}
-                          className="h-full w-full border-0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                        />
-                      ) : (
-                        <>
-                          <Image
-                            src={v.poster}
-                            alt={`${v.stage}: ${v.title}`}
-                            fill
-                            sizes="(min-width: 1024px) 22vw, 90vw"
-                            className="object-cover transition-transform duration-500 hover:scale-105"
-                            unoptimized
-                          />
-                          <span className="absolute right-3 top-3 text-[11px] font-sans-clean tabular-nums text-white/90 bg-black/60 px-2 py-0.5">
-                            {v.duration}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setPlayingId(v.id)}
-                            aria-label={`Play ${v.stage}: ${v.title}`}
-                            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full border border-white/90 bg-white/10 backdrop-blur-sm text-white transition-transform duration-300 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          {/* femur (thigh bone) */}
+          <path
+            d="M246 0 L354 0 C358 70 366 110 380 138 C404 160 422 176 414 198 C406 216 340 214 306 204 C302 202 298 202 294 204 C260 214 194 216 186 198 C178 176 196 160 220 138 C234 110 242 70 246 0 Z"
+            fill="#E9DDC4"
+            stroke="#BFA47A"
+            strokeWidth="2"
+          />
+          {/* cartilage on the femur */}
+          <path
+            d="M188 197 C194 217 262 215 296 205 M304 205 C338 215 406 217 412 197"
+            fill="none"
+            stroke="#7CC2BA"
+            strokeWidth="6"
+            strokeLinecap="round"
+          />
+          {/* menisci */}
+          <path d="M196 218 Q246 213 292 218 L284 233 Q244 236 204 233 Z" fill="#B8C2BF" />
+          <path d="M308 218 Q354 213 404 218 L396 233 Q356 236 316 233 Z" fill="#B8C2BF" />
+
+          {/* fibula */}
+          <path d="M392 284 Q418 282 424 304 L416 460 L394 460 L390 340 Z" fill="#EADFC9" stroke="#BFA47A" strokeWidth="2" />
+          {/* tibia (shin bone) */}
+          <path
+            d="M190 246 Q300 256 410 246 L404 276 C384 290 368 312 358 344 L352 460 L248 460 L242 344 C232 312 216 290 196 276 Z"
+            fill="#E9DDC4"
+            stroke="#BFA47A"
+            strokeWidth="2"
+          />
+          {/* tibial cartilage and subchondral plate */}
+          <path d="M192 236 Q300 244 408 236 L410 247 Q300 258 190 247 Z" fill="#BFE3DF" stroke="#7CC2BA" strokeWidth="1.5" />
+          <path d="M192 250 Q300 260 408 250 L406 258 Q300 268 194 258 Z" fill="#CDB892" />
+
+          {/* bone marrow lesion and the area we zoom into */}
+          <ellipse cx="250" cy="276" rx="36" ry="16" fill={`url(#${uid}-lesion)`} />
+          <circle
+            cx="250"
+            cy="272"
+            r="50"
+            fill="none"
+            stroke="#C2410C"
+            strokeWidth="2.5"
+            strokeDasharray="7 5"
+            className="motion-safe:animate-pulse"
+          />
+        </motion.g>
+
+        {/* ===================== 2. Close-up of the bone ===================== */}
+        <motion.g style={{ opacity: detOpacity, scale: detScale, originX: 0.5, originY: 0.5 }}>
+          <rect x="0" y="0" width="600" height="460" fill="#F3F8F7" />
+          {/* soft tissue on the left */}
+          <rect x="0" y="0" width="60" height="460" fill="#F6E3DC" />
+
+          {/* femur and its cartilage */}
+          <rect x="0" y="0" width="600" height="34" fill="#D9CBB1" />
+          <path d="M0 34 H600 V56 Q300 68 0 56 Z" fill="#BFE3DF" stroke="#7CC2BA" strokeWidth="1.5" />
+
+          {/* tibia: outer shell, inner spongy bone, subchondral plate, cartilage */}
+          <rect x="60" y="96" width="540" height="364" fill="#BFA47A" />
+          <rect x="82" y="154" width="518" height="306" fill="#EADFC9" />
+          <rect x="82" y="154" width="518" height="306" fill={`url(#${uid}-trab)`} />
+          <rect x="60" y="138" width="540" height="16" fill="#CDB892" />
+          <path d="M60 98 Q330 88 600 98 V138 H60 Z" fill="#BFE3DF" stroke="#7CC2BA" strokeWidth="1.5" />
+
+          {/* bone marrow lesion */}
+          <ellipse cx="330" cy="200" rx="74" ry="38" fill={`url(#${uid}-lesion)`} />
+          <motion.ellipse
+            cx="330"
+            cy="200"
+            rx="62"
+            ry="31"
+            fill="none"
+            stroke="#C2410C"
+            strokeWidth="2"
+            strokeDasharray="6 5"
+            style={{ opacity: ringOpacity }}
+          />
+
+          {/* substance spreading through the lesion */}
+          <motion.g style={{ opacity: fluidOpacity }}>
+            <motion.ellipse cx="332" cy="200" rx="58" ry="28" fill="#D97706" style={{ scale: fluidScale }} />
+            <motion.circle cx="296" cy="208" r="14" fill="#D97706" style={{ scale: fluidScale }} />
+            <motion.circle cx="372" cy="192" r="12" fill="#D97706" style={{ scale: fluidScale }} />
+          </motion.g>
+        </motion.g>
+
+        {/* ===================== 3. Needle and syringe ===================== */}
+        {/* Local origin is the needle tip, pointing up-right */}
+        <g transform="translate(322 200) rotate(-22)">
+          <motion.g style={{ x: needleX, opacity: needleOpacity }}>
+            <line x1="-214" y1="0" x2="-2" y2="0" stroke={`url(#${uid}-steel)`} strokeWidth="4" strokeLinecap="round" />
+            <rect x="-228" y="-8" width="16" height="16" rx="3" fill="#2F6F8F" />
+            <rect x="-346" y="-15" width="118" height="30" rx="4" fill="#FFFFFF" fillOpacity="0.9" stroke="#7B8785" strokeWidth="1.5" />
+            <motion.rect
+              x="-304"
+              y="-11"
+              width="72"
+              height="22"
+              rx="2"
+              fill="#D97706"
+              fillOpacity="0.85"
+              style={{ scaleX: liquidScale, originX: 1, originY: 0.5 }}
+            />
+            {[-320, -300, -280, -260, -240].map((x) => (
+              <line key={x} x1={x} y1="-15" x2={x} y2="-9" stroke="#7B8785" strokeWidth="1" />
+            ))}
+            <motion.g style={{ x: plungerX }}>
+              <rect x="-308" y="-12" width="6" height="24" fill="#4B5F5D" />
+              <line x1="-308" y1="0" x2="-440" y2="0" stroke="#4B5F5D" strokeWidth="5" />
+              <rect x="-448" y="-18" width="8" height="36" rx="2" fill="#4B5F5D" />
+            </motion.g>
+          </motion.g>
+        </g>
+      </svg>
+
+      {/* Labels for the whole knee */}
+      <motion.div style={{ opacity: ovOpacity }} aria-hidden="true">
+        <span className={`${label} left-[66%] top-[11%]`}>Femur (thigh bone)</span>
+        <span className={`${label} left-[71%] top-[46.5%]`}>Knee joint</span>
+        <span className={`${label} left-[6%] top-[78%]`}>Tibia (shin bone)</span>
+        <span className={`${label} left-[73%] top-[78%]`}>Fibula</span>
+        <span className={`${label} left-[3%] top-[59%] !bg-[#FFF8EE] text-[#C2410C]`}>Bone marrow lesion</span>
+      </motion.div>
+
+      {/* Labels for the close-up */}
+      <motion.div style={{ opacity: detOpacity }} aria-hidden="true">
+        <span className={`${label} left-[70%] top-[16.5%]`}>Joint space</span>
+        <span className={`${label} left-[70%] top-[25%]`}>Cartilage</span>
+        <span className={`${label} left-[70%] top-[32%]`}>Subchondral bone plate</span>
+        <span className={`${label} left-[70%] top-[43.5%] !bg-[#FFF8EE] text-[#C2410C]`}>Bone marrow lesion</span>
+        <span className={`${label} left-[70%] top-[72%]`}>Cancellous bone</span>
+      </motion.div>
+
+      {/* Callout while / after the substance is placed */}
+      <span
+        className={`pointer-events-none absolute left-[42%] top-[58%] rounded-lg border border-[#D97706]/50 bg-white px-2.5 py-1 text-[11px] font-semibold text-[#9A3412] shadow-sm transition-opacity duration-300 motion-reduce:transition-none sm:text-xs ${
+          step >= 2 ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        PRP or bone marrow concentrate
+      </span>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll-driven stage (default)                                       */
+/* ------------------------------------------------------------------ */
+
+function ScrollStage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [step, setStep] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: [`start ${NAV_OFFSET}px`, `end end`],
+  });
+  // Hold the first and last frame briefly so the ends feel settled
+  const p = useTransform(scrollYProgress, [0.03, 0.96], [0, 1]);
+
+  useMotionValueEvent(p, "change", (v) => {
+    const s = stepFromProgress(v);
+    setStep((prev) => (prev === s ? prev : s));
+  });
+
+  const goTo = (i: number) => {
+    const el = containerRef.current;
+    if (!el) return;
+    const top = window.scrollY + el.getBoundingClientRect().top - NAV_OFFSET;
+    const range = el.offsetHeight - (window.innerHeight - NAV_OFFSET);
+    const target = 0.03 + STEPS[i].center * 0.93;
+    window.scrollTo({ top: top + range * target, behavior: "smooth" });
+  };
+
+  const active = STEPS[step];
+
+  return (
+    <div ref={containerRef} className="relative min-h-[340vh]">
+      <div
+        style={{ top: NAV_OFFSET, height: `calc(100vh - ${NAV_OFFSET}px)` }}
+        className="sticky flex w-full items-start overflow-hidden pt-2 lg:items-center lg:pt-0"
+      >
+        <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-6 px-6 md:px-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14">
+          {/* Left (desktop): intro + steps */}
+          <div className="hidden space-y-8 lg:block">
+            <Intro hint />
+
+            <div className="relative">
+              <span aria-hidden="true" className="absolute bottom-3 left-[15px] top-3 w-px bg-[#1B2B2A]/15" />
+              <motion.span
+                aria-hidden="true"
+                style={{ scaleY: p, originY: 0 }}
+                className="absolute bottom-3 left-[14px] top-3 w-[3px] rounded-full bg-[#0F766E]"
+              />
+              <ol className="relative space-y-5">
+                {STEPS.map((s, i) => {
+                  const isActive = i === step;
+                  const isDone = i < step;
+                  return (
+                    <li key={s.title}>
+                      <button
+                        type="button"
+                        onClick={() => goTo(i)}
+                        aria-current={isActive ? "step" : undefined}
+                        className="group flex w-full items-start gap-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0F766E]"
+                      >
+                        <span
+                          className={`relative z-10 grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 text-sm font-semibold tabular-nums transition-colors ${
+                            isActive
+                              ? "border-[#C2410C] bg-[#C2410C] text-white"
+                              : isDone
+                              ? "border-[#0F766E] bg-[#0F766E] text-white"
+                              : "border-[#1B2B2A]/25 bg-[#FAF8F5] text-[#4B5F5D] group-hover:border-[#0F766E]"
+                          }`}
+                        >
+                          {i + 1}
+                        </span>
+                        <span>
+                          <span
+                            className={`block font-serif-display text-lg font-bold transition-colors ${
+                              isActive ? "text-[#1B2B2A]" : "text-[#4B5F5D]"
+                            }`}
                           >
-                            <Play className="h-5 w-5 translate-x-[1px]" fill="currentColor" />
-                          </button>
-                        </>
-                      )}
-                    </div>
-
-                    <div className="p-4 flex flex-col gap-3 flex-1">
-                      <div className="flex items-baseline gap-3 text-[11px] font-sans-clean uppercase tracking-[0.14em]">
-                        <span className="tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-                        <span className="text-[#C9D2D9]">{v.stage}</span>
-                      </div>
-                      <h3 className="text-sm font-sans-clean text-white leading-snug">
-                        {v.title}
-                      </h3>
-                      <div className="mt-auto pt-2 border-t border-white/10 text-[10px] font-sans-clean uppercase tracking-[0.14em] text-[#8FA0AE]">
-                        {v.tags[0]} <span className="mx-1.5 text-white/30">/</span> {v.tags[1]}
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
+                            {s.title}
+                          </span>
+                          {isActive && (
+                            <span className="mt-1 block max-w-[44ch] text-[15px] leading-relaxed text-[#3F5452]">
+                              {s.description}
+                            </span>
+                          )}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
             </div>
+          </div>
 
-            {/* Inside the theatre strip */}
-            <div className="lg:col-span-12 pt-8 border-t border-white/10">
-              <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                {PROCEDURE_STILLS.map((s) => (
-                  <li key={s.label}>
-                    <figure>
-                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0F1D29]">
-                        <Image
-                          src={s.image}
-                          alt={s.label}
-                          fill
-                          sizes="(min-width: 1024px) 14vw, 45vw"
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
-                      <figcaption className="mt-2 text-[11px] font-sans-clean text-[#C9D2D9] leading-snug">
-                        {s.label}
-                      </figcaption>
-                    </figure>
-                  </li>
+          {/* Illustration */}
+          <div>
+            <Illustration p={p} step={step} />
+
+            {/* Active step (mobile and tablet) */}
+            <div className="mt-4 lg:hidden">
+              <p className="text-sm font-semibold text-[#C2410C]">
+                Step {step + 1} of {STEPS.length}
+              </p>
+              <h3 className="mt-0.5 font-serif-display text-xl font-bold">{active.title}</h3>
+              <p className="mt-1 text-[15px] leading-relaxed text-[#3F5452]">{active.description}</p>
+              <div className="mt-3 flex gap-2" aria-hidden="true">
+                {STEPS.map((s, i) => (
+                  <span
+                    key={s.title}
+                    className={`h-1.5 flex-1 rounded-full transition-colors ${
+                      i <= step ? "bg-[#0F766E]" : "bg-[#1B2B2A]/15"
+                    }`}
+                  />
                 ))}
-              </ul>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
 
-        {/* ----------------------------- Patient voice ----------------------------- */}
-        <aside className="bg-[#F7F5F1] text-[#14181B] px-8 py-12 flex flex-col justify-between gap-10">
-          <div className="space-y-6">
-            <SectionEyebrow text="PATIENT VOICE" darkBg={false} />
+/* ------------------------------------------------------------------ */
+/* Static version for people who prefer reduced motion                  */
+/* ------------------------------------------------------------------ */
 
-            <div aria-hidden className="font-serif-display text-6xl leading-none text-[#14181B]">
-              &ldquo;
+function StaticFrame({ value, step }: { value: number; step: number }) {
+  const p = useMotionValue(value);
+  return <Illustration p={p} step={step} />;
+}
+
+function StaticSteps() {
+  // Progress values chosen so each frame shows its own moment
+  const frames = [0.06, 0.58, 0.8, 0.97];
+  return (
+    <div className="mx-auto w-full max-w-[1200px] px-6 py-4 md:px-12">
+      <ol className="grid grid-cols-1 gap-10 md:grid-cols-2">
+        {STEPS.map((s, i) => (
+          <li key={s.title}>
+            <StaticFrame value={frames[i]} step={i} />
+            <p className="mt-4 text-sm font-semibold text-[#C2410C]">
+              Step {i + 1} of {STEPS.length}
+            </p>
+            <h3 className="mt-0.5 font-serif-display text-xl font-bold">{s.title}</h3>
+            <p className="mt-1.5 max-w-[48ch] text-[15px] leading-relaxed text-[#3F5452]">{s.description}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Section                                                             */
+/* ------------------------------------------------------------------ */
+
+export default function InjectionProcedure() {
+  const reduce = !!useReducedMotion();
+
+  return (
+    <section
+      id="procedure-animation"
+      aria-label="How a subchondral injection works"
+      className="relative w-full bg-gradient-to-br from-[#FAF8F5] via-[#F7FAF9] to-[#F6F1E9] font-sans-clean text-[#1B2B2A]"
+    >
+      {reduce ? (
+        <>
+          <header className="mx-auto max-w-[1200px] px-6 pb-8 pt-16 md:px-12 md:pt-20">
+            <div className="max-w-[760px]">
+              <Intro hint={false} />
             </div>
-
-            <AnimatePresence mode="wait">
-              <motion.blockquote
-                key={voiceIndex}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="font-serif-display italic text-xl leading-snug text-[#14181B]"
-              >
-                {voice.quote}
-                {voice.attribution && (
-                  <footer className="mt-4 not-italic text-xs font-sans-clean text-[#7A756C]">
-                    {voice.attribution}
-                  </footer>
-                )}
-              </motion.blockquote>
-            </AnimatePresence>
-          </div>
-
-          {PATIENT_VOICES.length > 1 && (
-            <div className="flex items-center gap-6 text-[#14181B]">
-              <button
-                type="button"
-                onClick={() => step(-1)}
-                aria-label="Previous patient voice"
-                className="p-1 hover:text-[#7C2020] transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => step(1)}
-                aria-label="Next patient voice"
-                className="p-1 hover:text-[#7C2020] transition-colors"
-              >
-                <ArrowRight className="h-5 w-5" />
-              </button>
+          </header>
+          <StaticSteps />
+        </>
+      ) : (
+        <>
+          {/* On small screens the intro sits above the pinned stage; on desktop it is inside it */}
+          <header className="mx-auto max-w-[1200px] px-6 pb-4 pt-14 md:px-12 lg:hidden">
+            <div className="max-w-[760px]">
+              <Intro hint />
             </div>
-          )}
-        </aside>
+          </header>
+          <ScrollStage />
+        </>
+      )}
+
+      <div className="mx-auto max-w-[1200px] px-6 pb-16 pt-6 md:px-12 md:pb-20">
+        <div className="flex flex-col items-start justify-between gap-6 border-t border-[#1B2B2A]/10 pt-8 md:flex-row md:items-center">
+          <p className="max-w-[68ch] text-sm leading-relaxed text-[#4B5F5D]">
+            Schematic illustration, not to scale. The exact technique, guidance method and
+            substance used are decided by your surgeon for your knee. Response is variable, and
+            pain relief is not assured.
+          </p>
+          <a
+            href="#assess"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#C2410C] px-6 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-[#9A3412] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]"
+          >
+            Discuss my knee
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+        </div>
       </div>
     </section>
   );
 }
+
+// Named alias export for backwards compatibility
+export { InjectionProcedure as ProcedureSection };
