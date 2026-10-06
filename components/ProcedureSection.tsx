@@ -320,7 +320,6 @@ export default function ProcedureSection() {
                                   isActive
                                     ? "bg-[#C2410C]/10 text-[#C2410C]"
                                     : "bg-black/5 text-[#4B5F5D]"
-                                disguise
                                 }`}
                               >
                                 {s.short}
