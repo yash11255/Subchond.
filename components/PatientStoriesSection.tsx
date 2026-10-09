@@ -1,4 +1,5 @@
 "use client";
+import Carousel from "./Carousel";
 
 import React from "react";
 import { motion } from "framer-motion";
@@ -16,9 +17,9 @@ export default function PatientStoriesSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#0F766E]/15 pb-8">
           <div className="space-y-3">
-            <SectionEyebrow text="10 / FUNCTIONAL RECOVERY OUTCOMES" darkBg={false} />
-            <h2 className="font-serif-display text-4xl sm:text-5xl text-[#1B2B2A] uppercase tracking-tight font-bold">
-              PATIENT RECOVERY STORIES
+            <SectionEyebrow text="FUNCTIONAL RECOVERY OUTCOMES" darkBg={false} />
+            <h2 className="font-serif-display text-4xl sm:text-5xl text-[#1B2B2A] tracking-tight font-bold">
+              Patient recovery stories
             </h2>
           </div>
           <p className="text-sm sm:text-base font-sans-clean text-[#4B5F5D] max-w-md font-medium leading-relaxed">
@@ -27,11 +28,11 @@ export default function PatientStoriesSection() {
         </div>
 
         {/* Story Cards Grid with YouTube Thumbnails */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <Carousel label="Patient stories" autoPlayMs={6000} slideClass="basis-[88%] md:basis-1/2 lg:basis-1/3">
           {[
             {
               id: "wjfw3YFhbHI",
-              title: "Can Knee Osteoarthritis Be Treated Without Surgery?",
+              title: "Can knee osteoarthritis be treated without surgery?",
               tag: "CLINICIAN EXPLAINER",
               desc: "Dr. Manu Bora evaluates a patient with knee pain in both knees and explains stem cell protocol options.",
               url: "https://www.youtube.com/watch?v=wjfw3YFhbHI",
@@ -39,7 +40,7 @@ export default function PatientStoriesSection() {
             },
             {
               id: "jaYP5nJBGQU",
-              title: "Osteoarthritis Knee Pain: Non-Surgical Treatment Case",
+              title: "Knee osteoarthritis pain: treatment options without surgery",
               tag: "PATIENT STORY",
               desc: "A 51-year-old patient describes knee pain that limited walking and standing, and her experience post-treatment.",
               url: "https://www.youtube.com/watch?v=jaYP5nJBGQU",
@@ -47,7 +48,7 @@ export default function PatientStoriesSection() {
             },
             {
               id: "KcqdCPABNF0",
-              title: "Knee Osteoarthritis Pain Relief Recovery Journey",
+              title: "Knee pain reduced without surgery: a patient's journey",
               tag: "PATIENT RECOVERY",
               desc: "A patient with early osteoarthritis after ACL injury describes her consultation, treatment, and functional recovery.",
               url: "https://www.youtube.com/watch?v=KcqdCPABNF0",
@@ -60,7 +61,7 @@ export default function PatientStoriesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.15 }}
-              className="bg-[#FFFFFF] border border-[#0F766E]/20 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all group flex flex-col justify-between"
+              className="h-full bg-[#FFFFFF] border border-[#0F766E]/20 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all group flex flex-col justify-between"
             >
               <div>
                 <a
@@ -107,7 +108,7 @@ export default function PatientStoriesSection() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </Carousel>
 
       </div>
     </section>

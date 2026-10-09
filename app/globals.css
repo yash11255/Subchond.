@@ -86,3 +86,32 @@ h1, h2, h3, h4, h5, h6,
   background-color: var(--accent);
   color: #FFFFFF;
 }
+/* Mobile swipe carousel: any grid/list gets horizontal snap scrolling below md */
+@media (max-width: 767px) {
+  .m-carousel {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 14px !important;
+    margin-inline: -24px;
+    padding: 4px 24px 18px;
+    scroll-padding-inline: 24px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .m-carousel::-webkit-scrollbar { display: none; }
+  .m-carousel > * {
+    flex: 0 0 82%;
+    min-width: 0;
+    scroll-snap-align: start;
+    border-left-width: 0 !important;
+    border-top-width: 0 !important;
+  }
+  .m-carousel.m-carousel-sm > * { flex-basis: 62%; }
+  .m-carousel > * + * { margin-top: 0 !important; }
+}
+
+/* Hide scrollbar on desktop carousels */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { NutritionIllustration, PhysioIllustration } from "./CareIllustrations";
 import { motion, useReducedMotion } from "framer-motion";
 import { Activity, ArrowUpRight } from "lucide-react";
 
@@ -29,7 +30,7 @@ const PARTNERS: CarePartner[] = [
     linkLabel: "orthosport.in",
     accent: "text-[#2F7D5B]",
     image: {
-      src: "/images/dr2.png",
+      src: "/images/dr-manu-portrait.png",
       alt: "Dr. Manu Bora examining a patient's knee in clinic",
     },
   },
@@ -44,7 +45,7 @@ const PARTNERS: CarePartner[] = [
     linkLabel: "threadsphysio.com",
     accent: "text-[#2F6F8F]",
     image: {
-      src: "/images/rehabilitate.png",
+      src: "/assets/ot/ot-12.webp",
       alt: "Physiotherapist guiding a patient through knee rehabilitation and strengthening",
     },
   },
@@ -82,7 +83,7 @@ function PartnerImage({ src, alt }: { src: string; alt: string }) {
       fill
       sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 90vw"
       onError={() => setFailed(true)}
-      className="object-cover"
+      className="object-cover object-[center_15%]"
     />
   );
 }
@@ -125,11 +126,17 @@ export default function CareTeamSection() {
         </header>
 
         {/* Three parts of the programme */}
-        <ol className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
+        <ol className="m-carousel grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
           {PARTNERS.map((p) => (
             <li key={p.id} className="flex flex-col">
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#E8F1EF] shadow-[0_12px_40px_rgba(27,43,42,0.10)]">
-                <PartnerImage src={p.image.src} alt={p.image.alt} />
+                {p.id === "threads-physio" ? (
+                  <PhysioIllustration />
+                ) : p.id === "reverse-clinics" ? (
+                  <NutritionIllustration />
+                ) : (
+                  <PartnerImage src={p.image.src} alt={p.image.alt} />
+                )}
                 <span
                   aria-hidden="true"
                   className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-sm font-semibold tabular-nums shadow-sm backdrop-blur-sm"

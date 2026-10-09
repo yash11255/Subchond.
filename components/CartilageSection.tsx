@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import SectionEyebrow from "./SectionEyebrow";
+import KneeAnimation, { type KneeFocus } from "./KneeAnimation";
 
 export interface PainCause {
   id: string;
@@ -19,7 +19,7 @@ export const PAIN_CAUSES: PainCause[] = [
     title: "Subchondral bone stress",
     description:
       "The living, vascular, pain-sensitive bone directly beneath cartilage can undergo overload and remodeling.",
-    image: "/images/cause-subchondral-bone.png",
+    image: "/images/bonestress.png",
     alt: "Illustration of the subchondral bone beneath the knee cartilage",
   },
   {
@@ -27,7 +27,7 @@ export const PAIN_CAUSES: PainCause[] = [
     title: "Bone marrow lesions",
     description:
       "MRI-visible changes may be linked with pain fluctuations and progression; they are not the cause in every knee.",
-    image: "/images/cause-bone-marrow-lesions.png",
+    image: "/assets/knee-bml-mri.png",
     alt: "Illustration of a bone marrow lesion under the knee cartilage",
   },
   {
@@ -35,7 +35,7 @@ export const PAIN_CAUSES: PainCause[] = [
     title: "Microdamage",
     description:
       "Stress-related changes may occur in the supporting bone plate and trabeculae.",
-    image: "/images/cause-microdamage.png",
+    image: "/assets/oa-cutaway.webp",
     alt: "Illustration of stress-related changes in the supporting bone",
   },
   {
@@ -43,7 +43,7 @@ export const PAIN_CAUSES: PainCause[] = [
     title: "Synovial inflammation",
     description:
       "Inflamed joint lining can contribute to swelling, warmth and stiffness.",
-    image: "/images/cause-synovial-inflammation.png",
+    image: "/assets/hero-anatomy.png",
     alt: "Illustration of the knee joint and its lining",
   },
   {
@@ -51,7 +51,7 @@ export const PAIN_CAUSES: PainCause[] = [
     title: "Meniscus & alignment",
     description:
       "Meniscal degeneration and uneven loading can increase symptoms and alter how forces cross the joint.",
-    image: "/images/cause-meniscus-alignment.png",
+    image: "/assets/knee-oa-xray.png",
     alt: "Heat map of load distribution across the knee joint",
   },
   {
@@ -59,12 +59,19 @@ export const PAIN_CAUSES: PainCause[] = [
     title: "Muscle & movement",
     description:
       "Strength, activity tolerance and gait mechanics matter for how comfortably the knee functions.",
-    image: "/images/cause-muscle-movement.png",
-    alt: "Illustration of the knee joint and surrounding structures",
+    image: "/images/dr3.png",
+    alt: "Dr. Manu Bora assessing knee movement and mechanics",
   },
 ];
 
-const FALLBACK_IMAGE = "/assets/oa-cutaway.webp";
+const FOCUS: Record<string, KneeFocus> = {
+  "subchondral-bone-stress": "bone",
+  "bone-marrow-lesions": "bml",
+  microdamage: "micro",
+  "synovial-inflammation": "synovium",
+  "meniscus-alignment": "meniscus",
+  "muscle-movement": "muscle",
+};
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function ProblemSection() {
@@ -80,9 +87,9 @@ export default function ProblemSection() {
       <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 items-start gap-10 px-6 md:px-12 lg:grid-cols-12 lg:gap-12">
         {/* ---------- Left: heading & intro ---------- */}
         <div className="space-y-5 lg:col-span-4 lg:sticky lg:top-24">
-          <SectionEyebrow text="04 / THE PROBLEM" darkBg={false} />
+          <SectionEyebrow text="THE PROBLEM" darkBg={false} />
 
-          <h2 className="font-serif-display text-4xl font-bold uppercase leading-[0.95] tracking-tight text-[#1B2B2A] sm:text-5xl md:text-[3.4rem]">
+          <h2 className="font-serif-display text-4xl font-bold leading-[1.05] tracking-tight text-[#1B2B2A] sm:text-5xl md:text-[3.4rem]">
             Why does an <span className="text-[#0F766E]">arthritic knee</span> hurt?
           </h2>
 
@@ -112,30 +119,12 @@ export default function ProblemSection() {
         <div className="flex flex-col items-center lg:col-span-5 lg:sticky lg:top-24">
           <div className="relative w-full max-w-[480px] overflow-hidden rounded-2xl border border-[#0F766E]/15 bg-white shadow-[0_24px_50px_-24px_rgba(15,118,110,0.35)]">
             {/* Image area — swaps with the active cause */}
-            <div className="relative aspect-[4/3] w-full">
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={active.id}
-                  initial={{ opacity: 0, scale: 1.03 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.45, ease }}
-                  className="absolute inset-0"
-                >
-                  <Image
-                    src={active.image || FALLBACK_IMAGE}
-                    alt={active.alt}
-                    fill
-                    sizes="(min-width: 1024px) 38vw, 92vw"
-                    className="object-contain p-6"
-                    priority
-                    unoptimized
-                  />
-                </motion.div>
-              </AnimatePresence>
+            <div className="relative aspect-square w-full bg-gradient-to-b from-white to-[#EEF6F4]">
+              <KneeAnimation focus={FOCUS[active.id]} showCaption={false} className="p-4" />
+              
 
               {/* Index badge */}
-              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-[#1B2B2A]/85 px-3 py-1.5 backdrop-blur-sm">
+              <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-[#1B2B2A]/85 px-3 py-1.5 backdrop-blur-sm">
                 <span className="font-sans-clean text-[11px] font-bold tabular-nums text-[#F4E9D8]">
                   {String(activeIndex + 1).padStart(2, "0")} / 06
                 </span>
@@ -186,7 +175,7 @@ export default function ProblemSection() {
         </div>
 
         {/* ---------- Right: six contributing factors ---------- */}
-        <ol className="divide-y divide-[#0F766E]/15 lg:col-span-3 lg:border-l lg:border-[#0F766E]/15 lg:pl-6">
+        <ol className="m-carousel divide-y divide-[#0F766E]/15 lg:col-span-3 lg:border-l lg:border-[#0F766E]/15 lg:pl-6">
           {PAIN_CAUSES.map((cause, i) => {
             const isActive = cause.id === activeId;
 

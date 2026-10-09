@@ -16,11 +16,11 @@ export default function RehabSection() {
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 items-center gap-12 relative z-10">
         
         <div className="lg:col-span-8 space-y-6">
-          <SectionEyebrow text="09 / KNEE ASSESSMENT & REHABILITATION" darkBg={false} />
+          <SectionEyebrow text="KNEE ASSESSMENT & REHABILITATION" darkBg={false} />
 
-          <h2 className="font-serif-display text-4xl sm:text-6xl md:text-7xl text-[#1B2B2A] uppercase tracking-tight leading-[0.9] font-bold">
-            READY TO LOOK <br />
-            BEYOND THE SURFACE?
+          <h2 className="font-serif-display text-4xl sm:text-6xl md:text-7xl text-[#1B2B2A] tracking-tight leading-[1.05] font-bold">
+            Ready to look <br />
+            <span className="text-[#0F766E]">beyond the surface?</span>
           </h2>
 
           <p className="text-base md:text-lg lg:text-xl font-sans-clean font-medium text-[#4B5F5D] max-w-xl leading-relaxed">

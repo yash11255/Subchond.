@@ -327,7 +327,7 @@ export default function ImagingSection() {
         </div>
 
         {/* Comparison: two columns on one surface */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-0 md:divide-x md:divide-[#1B2B2A]/10">
+        <div className="m-carousel grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-0 md:divide-x md:divide-[#1B2B2A]/10">
           <div className="md:pr-10">
             <p className="text-sm font-semibold text-[#0F766E]">Usually the first scan</p>
             <h3 className="mt-1 font-serif-display text-2xl font-bold">Weight-bearing X-ray</h3>

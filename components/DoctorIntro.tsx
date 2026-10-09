@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import Carousel from "./Carousel";
 
 /* ------------------------------------------------------------------ */
 /* Content. Everything marked "confirm" is a placeholder to replace.   */
@@ -13,15 +14,15 @@ const CHANNEL_URL = "https://www.youtube.com/@drmanubora";
 
 // confirm: add real photos to /public, or delete the entries you don't have
 type Slide =
-  | { kind: "photo"; src: string; alt: string }
+  | { kind: "photo"; src: string; alt: string; pos: string }
   | { kind: "channel" };
 
 const slides: Slide[] = [
-  { kind: "photo", src: "/dr-manu-bora.jpg", alt: "Dr. Manu Bora, Orthopaedic Surgeon and Joint Preservation Specialist" },
-  { kind: "photo", src: "/images/dr2.png", alt: "Dr. Manu Bora in patient consultation" },
-  { kind: "photo", src: "/images/dr3.png", alt: "Dr. Manu Bora evaluating MRI scan for subchondral lesions" },
-  { kind: "photo", src: "/assets/ot/ot-03.webp", alt: "Dr. Manu Bora performing arthroscopic joint surgery in OT" },
-  { kind: "photo", src: "/assets/ot/ot-07.webp", alt: "Dr. Manu Bora guiding high-definition surgical cameras in OT" },
+  { kind: "photo", src: "/dr-manu-bora.jpg", alt: "Dr. Manu Bora, Orthopaedic Surgeon and Joint Preservation Specialist", pos: "object-[center_30%]" },
+  { kind: "photo", src: "/images/dr-manu-portrait.png", alt: "Dr. Manu Bora in his clinic", pos: "object-top" },
+  { kind: "photo", src: "/images/dr2.png", alt: "Dr. Manu Bora examining a knee in the operating theatre", pos: "object-[center_25%]" },
+  { kind: "photo", src: "/images/dr3.png", alt: "Dr. Manu Bora performing a knee procedure with his team", pos: "object-[center_30%]" },
+  { kind: "photo", src: "/assets/ot/ot-01.webp", alt: "Dr. Manu Bora preparing a subchondral knee procedure", pos: "object-[center_30%]" },
   { kind: "channel" },
 ];
 
@@ -45,26 +46,14 @@ const locations = ["Gurugram", "New Delhi", "Mumbai"];
 
 // Real videos from youtube.com/@drmanubora
 const videos = [
-  {
-    id: "wnXqPbEH1V4",
-    title: "Subchondral BMC Joint Preservation Protocol",
-    meta: "Clinical Protocol / Dr. Manu Bora",
-  },
-  {
-    id: "IXA1DOaJk7w",
-    title: "ACL Reconstruction, Bone Bruises & Fast Recovery",
-    meta: "Sports Medicine / Graft Osteointegration",
-  },
-  {
-    id: "wjfw3YFhbHI",
-    title: "Can Knee Osteoarthritis Be Treated Without Surgery?",
-    meta: "Adipose Stem Cell / Joint Preservation",
-  },
-  {
-    id: "C3zfD3vMhrU",
-    title: "Knee Osteoarthritis: 15-Year Long-Term Outcomes",
-    meta: "Subchondral BMC / Clinical Evidence",
-  },
+  { id: "9-5ei6AWDiY", title: "Knee replacement delayed 10 years? 15-year research on subchondral bone treatment", meta: "Subchondral treatment · Hindi" },
+  { id: "uNbLrxSPWS0", title: "Knee replacement avoided for 10 years: understanding Subchond bone treatment", meta: "Subchondral treatment · Hindi" },
+  { id: "Gws5H_Sc9Vc", title: "Knee osteoarthritis pain: how to treat it without surgery", meta: "Knee arthritis · Hindi" },
+  { id: "C3zfD3vMhrU", title: "Knee osteoarthritis: how to heal without surgery?", meta: "Knee arthritis · Hindi" },
+  { id: "s7iyzuHJg5s", title: "ACL surgery explained: complete guide for patients", meta: "ACL · Hindi" },
+  { id: "wnXqPbEH1V4", title: "Best ACL surgery methods: the top options worldwide", meta: "ACL · Hindi" },
+  { id: "IXA1DOaJk7w", title: "Why do some ACL surgeries give poor results? The truth", meta: "ACL · Hindi" },
+  { id: "U1YSNF6PEOg", title: "Torn knee ligament? 5 signs you can check at home", meta: "ACL · Hindi" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -153,7 +142,7 @@ function ProfileCarousel({ reduce }: { reduce: boolean }) {
         if (e.key === "ArrowRight") go(index + 1);
       }}
     >
-      <div className="relative aspect-[8/7] w-full overflow-hidden rounded-2xl bg-[#E8F1EF]">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-[#F3F4F2]">
         <div
           className="flex h-full transition-transform duration-500 ease-out motion-reduce:transition-none"
           style={{ transform: `translateX(-${index * 100}%)` }}
@@ -174,7 +163,7 @@ function ProfileCarousel({ reduce }: { reduce: boolean }) {
                   fill
                   priority={i === 0}
                   sizes="(max-width: 1024px) 90vw, 360px"
-                  className="object-cover object-top"
+                  className={`object-cover ${s.pos}`}
                 />
               ) : (
                 <a
@@ -326,7 +315,7 @@ export default function DoctorIntro() {
 
         {/* 2. Credentials */}
         <div className="mt-14 border-t border-[#1B2B2A]/10 pt-10 font-sans-clean">
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-0 md:divide-x md:divide-[#1B2B2A]/10">
+          <div className="m-carousel grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-0 md:divide-x md:divide-[#1B2B2A]/10">
             <div className="md:pr-8">
               <h3 className={`${colHead} text-[#2F7D5B]`}>
                 <CapIcon className="h-5 w-5" /> Training
@@ -395,9 +384,10 @@ export default function DoctorIntro() {
             </a>
           </div>
 
-          <ul className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {videos.map((v, i) => (
-              <li key={i}>
+          <div className="min-w-0">
+          <Carousel label="Dr. Manu Bora YouTube videos" dark autoPlayMs={5000} slideClass="basis-[85%] sm:basis-1/2 xl:basis-1/3">
+            {videos.map((v) => (
+              <div key={v.id}>
                 <a
                   href={v.id ? `https://www.youtube.com/watch?v=${v.id}` : CHANNEL_URL}
                   target="_blank"
@@ -405,7 +395,7 @@ export default function DoctorIntro() {
                   className="group block rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 >
                   <span className="relative block aspect-video overflow-hidden rounded-xl bg-white/10">
-                    {v.id && (
+                    {(
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`}
@@ -421,13 +411,14 @@ export default function DoctorIntro() {
                     </span>
                   </span>
                   <span className="mt-3 block text-sm text-white/70">{v.meta}</span>
-                  <span className="mt-0.5 block text-[15px] font-semibold leading-snug group-hover:underline">
+                  <span className="mt-0.5 line-clamp-2 block text-[15px] font-semibold leading-snug group-hover:underline">
                     {v.title}
                   </span>
                 </a>
-              </li>
+              </div>
             ))}
-          </ul>
+          </Carousel>
+          </div>
         </div>
       </motion.div>
     </section>

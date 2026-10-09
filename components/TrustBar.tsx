@@ -29,7 +29,7 @@ export default function TrustBar() {
 
   return (
     <div className="w-full bg-[#E8F1EF] border-y border-[#0F766E]/15 py-6 md:py-8 font-sans-clean">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
+      <div className="max-md:!mx-0 max-w-[1440px] mx-auto px-6 md:px-12 m-carousel m-carousel-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
         {TRUST_ITEMS.map((item, idx) => {
           const Icon = item.icon;
           return (

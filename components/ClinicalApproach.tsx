@@ -21,7 +21,6 @@ export interface ApproachStep {
 }
 
 // confirm: review the "detail" sentences with Dr. Bora.
-// confirm: these are stock photos. Replace with your own clinic photos when you have them.
 export const APPROACH_STEPS: ApproachStep[] = [
   {
     id: "scan",
@@ -29,7 +28,7 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Assess imaging",
     detail:
       "Your weight-bearing X-rays, and an MRI if one is needed, are reviewed together to look at joint space, alignment and bone marrow lesions.",
-    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1200&q=80",
+    image: "/assets/knee-bml-mri.png",
     alt: "Clinician reviewing knee MRI and X-ray imaging",
   },
   {
@@ -38,7 +37,7 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Find pain contributors",
     detail:
       "Your examination and imaging are matched to your symptoms, so we know what is actually driving the pain before choosing any treatment.",
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/dr-manu-portrait.png",
     alt: "Physician explaining knee findings to a patient",
   },
   {
@@ -47,7 +46,7 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Choose suitable care",
     detail:
       "Dr. Bora recommends the care that fits your knee. Targeted subchondral treatment is considered only when it is appropriate for you.",
-    image: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=1200&q=80",
+    image: "/assets/ot/ot-08.webp",
     alt: "Targeted subchondral treatment planning",
   },
   {
@@ -56,7 +55,7 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Restore movement",
     detail:
       "Guided physiotherapy helps the knee settle and brings back your range of movement.",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80",
+    image: "/assets/ot/ot-12.webp",
     alt: "Patient doing guided knee rehabilitation exercises",
   },
   {
@@ -65,7 +64,7 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Build capacity",
     detail:
       "Strength work and weight and load management build the capacity your knee needs for daily life and sport.",
-    image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1200&q=80",
+    image: "/assets/ot/ot-09.webp",
     alt: "Patient doing strength training for the knee",
   },
   {
@@ -74,14 +73,14 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Measure progress",
     detail:
       "Regular check-ins track your pain and function, and the plan is adjusted to how your knee responds.",
-    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80",
+    image: "/dr-manu-bora.jpg",
     alt: "Follow-up consultation reviewing progress",
   },
 ];
 
 const WATCH = {
-  poster: `https://i.ytimg.com/vi/wnXqPbEH1V4/maxresdefault.jpg`,
-  youtubeId: "wnXqPbEH1V4",
+  poster: `https://i.ytimg.com/vi/9-5ei6AWDiY/hqdefault.jpg`,
+  youtubeId: "9-5ei6AWDiY",
 };
 
 const DESKTOP = "(min-width: 1024px)";
@@ -156,7 +155,7 @@ export default function ClinicalApproach() {
 
             {/* Right: image, step detail, rail */}
             <div className="space-y-6">
-              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-[#E8F1EF] shadow-[0_12px_40px_rgba(27,43,42,0.10)] lg:aspect-[2/1]">
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#12302D] shadow-[0_12px_40px_rgba(27,43,42,0.10)] lg:aspect-[16/10]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={active.id}
@@ -168,10 +167,19 @@ export default function ClinicalApproach() {
                   >
                     <Image
                       src={active.image}
+                      alt=""
+                      aria-hidden
+                      fill
+                      sizes="40vw"
+                      className="scale-110 object-cover blur-2xl brightness-90"
+                      unoptimized
+                    />
+                    <Image
+                      src={active.image}
                       alt={active.alt}
                       fill
                       sizes="(min-width: 1024px) 60vw, 100vw"
-                      className="object-cover"
+                      className="object-contain"
                       priority={activeIndex === 0}
                       unoptimized
                     />

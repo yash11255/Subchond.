@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Pause, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import KneeAnimation from "./KneeAnimation";
 
-const YT_ID = "VtG6c_qR-ao";
-const poster = `https://i.ytimg.com/vi/${YT_ID}/maxresdefault.jpg`;
+const YT_ID = "uNbLrxSPWS0"; // Dr. Manu Bora: "Knee Replacement Avoided for 10 Years? Understanding Subchond Bone Treatment"
 const YT_ORIGIN = "https://www.youtube-nocookie.com";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -29,15 +29,12 @@ const evidence = [
 ];
 
 export default function Hero() {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
   const reduceMotion = !!useReducedMotion();
   const [mounted, setMounted] = useState(false);
-  const [playing, setPlaying] = useState(true);
-  const [mediaMode, setMediaMode] = useState<"doctor" | "video">("doctor");
+  const [mediaMode, setMediaMode] = useState<"diagram" | "video">("diagram");
 
   useEffect(() => {
     setMounted(true);
-    if (reduceMotion) setPlaying(false);
   }, [reduceMotion]);
 
   // Entrance animation. With reduced motion, content fades only, with no movement.
@@ -50,18 +47,6 @@ export default function Hero() {
     }),
   };
 
-  const src =
-    `${YT_ORIGIN}/embed/${YT_ID}` +
-    `?autoplay=${reduceMotion ? 0 : 1}&mute=1&controls=0&loop=1&playlist=${YT_ID}` +
-    `&modestbranding=1&playsinline=1&rel=0&disablekb=1&iv_load_policy=3&enablejsapi=1`;
-
-  const toggleVideo = () => {
-    const win = iframeRef.current?.contentWindow;
-    if (!win) return;
-    const func = playing ? "pauseVideo" : "playVideo";
-    win.postMessage(JSON.stringify({ event: "command", func, args: "" }), YT_ORIGIN);
-    setPlaying(!playing);
-  };
 
   return (
     <section
@@ -75,7 +60,7 @@ export default function Hero() {
       />
 
       <div className="relative mx-auto max-w-[1200px] px-6 pb-20 pt-28 md:px-12 md:pt-32 lg:pb-28">
-        <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-12">
+        <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
           {/* ---------- Left: message ---------- */}
           <div>
             <motion.span
@@ -88,13 +73,24 @@ export default function Hero() {
               Orthopaedics · Joint preservation
             </motion.span>
 
+            <motion.p
+              variants={fadeUp}
+              custom={0.5}
+              initial="hidden"
+              animate="show"
+              lang="hi"
+              className="mt-5 text-lg font-semibold text-[#C2410C]"
+            >
+              घुटना बदलवाने से पहले, उसे बचाने की सोचिए।
+            </motion.p>
+
             <motion.h1
               id="hero-heading"
               variants={fadeUp}
               custom={1}
               initial="hidden"
               animate="show"
-              className="font-serif-display mt-6 text-[2.75rem] font-bold leading-[1.08] tracking-tight text-[#1B2B2A] sm:text-6xl xl:text-[4.25rem]"
+              className="font-serif-display mt-3 text-[2.75rem] font-bold leading-[1.08] tracking-tight text-[#1B2B2A] sm:text-6xl xl:text-[4.25rem]"
             >
               Preserving your own knee, <span className="text-[#0F766E]">for longer.</span>
             </motion.h1>
@@ -176,115 +172,68 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* ---------- Right: Doctor Spotlight & Video Switcher ---------- */}
+          {/* ---------- Right: animated knee diagram / explainer video ---------- */}
           <motion.div variants={fadeUp} custom={2} initial="hidden" animate="show">
-            {/* View Mode Switcher Pills */}
             <div className="mb-3 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setMediaMode("doctor")}
-                className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
-                  mediaMode === "doctor"
-                    ? "bg-[#0F766E] text-white shadow-sm"
-                    : "bg-white/80 text-[#1B2B2A] border border-[#1B2B2A]/15 hover:bg-white"
-                }`}
-              >
-                👨‍⚕️ Dr. Manu Bora
-              </button>
-              <button
-                type="button"
-                onClick={() => setMediaMode("video")}
-                className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
-                  mediaMode === "video"
-                    ? "bg-[#0F766E] text-white shadow-sm"
-                    : "bg-white/80 text-[#1B2B2A] border border-[#1B2B2A]/15 hover:bg-white"
-                }`}
-              >
-                🎬 Arthroscopic Video
-              </button>
+              {([
+                ["diagram", "How the knee hurts"],
+                ["video", "Watch Dr. Bora explain"],
+              ] as const).map(([mode, label]) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setMediaMode(mode)}
+                  className={`rounded-full px-4 py-2 text-xs font-bold transition-all sm:text-sm ${
+                    mediaMode === mode
+                      ? "bg-[#0F766E] text-white shadow-sm"
+                      : "border border-[#1B2B2A]/15 bg-white/80 text-[#1B2B2A] hover:bg-white"
+                  }`}
+                >
+                  {mode === "video" ? "▶ " : ""}
+                  {label}
+                </button>
+              ))}
             </div>
 
             <div className="relative">
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 translate-x-4 translate-y-4 rounded-3xl bg-[#0F766E]/10"
-              />
+              <div aria-hidden="true" className="absolute inset-0 translate-x-4 translate-y-4 rounded-3xl bg-[#0F766E]/10" />
 
-              <div className="relative overflow-hidden rounded-3xl border border-[#1B2B2A]/10 bg-[#E8F1EF] shadow-[0_30px_60px_-30px_rgba(27,43,42,0.35)]">
-                {mediaMode === "doctor" ? (
-                  <div className="relative aspect-[4/3] w-full sm:aspect-[16/12]">
-                    <Image
-                      src="/dr-manu-bora.jpg"
-                      alt="Dr. Manu Bora, Orthopaedic Surgeon and Joint Preservation Specialist"
-                      fill
-                      priority
-                      sizes="(min-width: 1024px) 500px, 100vw"
-                      className="object-cover object-top"
+              <div className="relative overflow-hidden rounded-3xl border border-[#1B2B2A]/10 bg-gradient-to-b from-white to-[#EEF6F4] shadow-[0_30px_60px_-30px_rgba(27,43,42,0.35)]">
+                {mediaMode === "diagram" ? (
+                  <div className="relative aspect-[4/5] w-full p-4 sm:aspect-square lg:aspect-[4/5]">
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-[linear-gradient(rgba(15,118,110,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(15,118,110,0.06)_1px,transparent_1px)] bg-[size:28px_28px]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#12302D]/90 via-[#12302D]/20 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-6 text-white space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="rounded bg-[#C2410C] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
-                          Chief Surgeon
-                        </span>
-                        <span className="text-xs text-white/80 font-medium">Orthosport Centres</span>
-                      </div>
-                      <h3 className="font-serif-display text-2xl font-bold">Dr. Manu Bora</h3>
-                      <p className="text-xs text-white/90">
-                        Pioneer in Subchondral Joint Preservation & Anatomical ACL Reconstruction
-                      </p>
-                      <p className="text-[11px] text-[#A7F3D0] pt-1">
-                        Gurugram (Golf Course Rd) · New Delhi · Mumbai
-                      </p>
-                    </div>
+                    <KneeAnimation />
                   </div>
                 ) : (
-                  <div
-                    className="relative aspect-[4/3] w-full bg-cover bg-center sm:aspect-[16/11]"
-                    style={{ backgroundImage: `url(${poster})` }}
-                  >
+                  <div className="relative aspect-video w-full bg-black lg:aspect-[4/5]">
                     {mounted && (
                       <iframe
-                        ref={iframeRef}
-                        src={src}
-                        title="Background video: subchondral treatment, arthroscopic view"
-                        aria-hidden="true"
-                        tabIndex={-1}
-                        allow="autoplay; encrypted-media; picture-in-picture"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        className="pointer-events-none absolute left-1/2 top-1/2 aspect-video w-[118%] max-w-none -translate-x-1/2 -translate-y-1/2 border-0"
+                        src={`${YT_ORIGIN}/embed/${YT_ID}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+                        title="Dr. Manu Bora explains subchondral bone treatment"
+                        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                        allowFullScreen
+                        className="absolute inset-0 h-full w-full border-0"
                       />
                     )}
-                    <div className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between gap-4 bg-gradient-to-t from-[#12302D]/85 to-transparent px-5 pb-4 pt-14">
-                      <p className="text-sm font-medium text-white/90">
-                        Subchondral treatment, arthroscopic view
-                      </p>
-                      <button
-                        type="button"
-                        onClick={toggleVideo}
-                        aria-label={playing ? "Pause background video" : "Play background video"}
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur-sm transition-colors hover:bg-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                      >
-                        {playing ? (
-                          <Pause className="h-4 w-4" fill="currentColor" aria-hidden="true" />
-                        ) : (
-                          <Play className="h-4 w-4 translate-x-[1px]" fill="currentColor" aria-hidden="true" />
-                        )}
-                      </button>
-                    </div>
                   </div>
                 )}
               </div>
 
-              {/* Floating chip on the panel's corner */}
-              <div className="absolute -left-3 -top-5 z-30 rounded-2xl border border-[#1B2B2A]/10 bg-white px-5 py-4 shadow-[0_16px_40px_-16px_rgba(27,43,42,0.35)] md:-left-8">
+              <motion.div
+                animate={reduceMotion ? undefined : { y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -left-2 top-3 z-30 scale-90 origin-top-left rounded-2xl border border-[#1B2B2A]/10 bg-white px-5 py-4 md:-left-8 md:-top-5 md:scale-100 shadow-[0_16px_40px_-16px_rgba(27,43,42,0.35)] md:-left-8"
+              >
                 <p className="font-serif-display text-2xl font-bold text-[#0F766E]">10,000+</p>
                 <p className="mt-0.5 text-sm leading-tight text-[#4B5F5D]">
                   Knees treated
                   <br />
                   by Dr. Manu Bora
                 </p>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>

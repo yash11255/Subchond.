@@ -29,8 +29,8 @@ export default function OtGallerySection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-3">
-            <SectionEyebrow text="03 / INSIDE THE OPERATING THEATRE" darkBg={false} />
-            <h2 className="font-serif-display text-3xl sm:text-4xl lg:text-5xl uppercase font-bold text-[#1B2B2A]">
+            <SectionEyebrow text="INSIDE THE OPERATING THEATRE" darkBg={false} />
+            <h2 className="font-serif-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1B2B2A]">
               Surgical <span className="text-[#0F766E]">Precision &amp; Setup</span>
             </h2>
             <p className="font-sans-clean text-base text-[#4B5F5D] max-w-xl">
@@ -43,14 +43,14 @@ export default function OtGallerySection() {
         </div>
 
         {/* 12 Image Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="m-carousel m-carousel-sm grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {otPhotos.map((photo, idx) => (
             <motion.button
               key={photo.id}
               onClick={() => setSelectedPhoto(photo)}
               whileHover={{ scale: 1.03, y: -3 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative aspect-[4/3] w-full rounded-xl overflow-hidden bg-white shadow-sm border border-[#0F766E]/15 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
+              className="group relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-white shadow-sm border border-[#0F766E]/15 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
             >
               <Image
                 src={photo.src}

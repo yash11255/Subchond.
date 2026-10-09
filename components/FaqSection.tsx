@@ -59,10 +59,10 @@ export default function FaqSection() {
         
         {/* Left Column: Heading */}
         <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
-          <SectionEyebrow text="10 / PATIENT EDUCATION & FAQS" darkBg={false} />
+          <SectionEyebrow text="PATIENT EDUCATION & FAQS" darkBg={false} />
 
-          <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight leading-[0.95] text-[#1B2B2A] font-bold">
-            Frequently Asked Questions.
+          <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05] text-[#1B2B2A] font-bold">
+            Frequently asked questions
           </h2>
 
           <p className="text-base sm:text-lg font-sans-clean font-medium text-[#4B5F5D] leading-relaxed">

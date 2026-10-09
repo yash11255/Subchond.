@@ -3,6 +3,7 @@ import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
+import ScrollProgress from "@/components/ScrollProgress";
 import WhatsAppReportModal from "@/components/WhatsAppReportModal";
 import KneeChatbotModal from "@/components/KneeChatbotModal";
 
@@ -41,9 +42,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} ${inter.variable}`}>
+    <html lang="en-IN" className={`${outfit.variable} ${inter.variable}`}>
       <body suppressHydrationWarning className="bg-[#F7FAF9] text-[#1B2B2A] antialiased selection:bg-[#0F766E] selection:text-white font-sans-clean font-normal text-base leading-relaxed">
         <SmoothScroll>
+          <ScrollProgress />
           <Navbar />
           {children}
           <WhatsAppReportModal />

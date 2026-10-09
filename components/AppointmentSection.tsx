@@ -31,11 +31,11 @@ export default function AppointmentSection() {
         
         {/* Left Column: Info & Trust */}
         <div className="lg:col-span-6 space-y-8">
-          <SectionEyebrow text="11 / CONSULTATION & SECOND OPINION" darkBg={false} />
+          <SectionEyebrow text="CONSULTATION & SECOND OPINION" darkBg={false} />
 
           <div className="space-y-4">
-            <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight leading-[0.95] text-[#1B2B2A] font-bold">
-              Schedule Your Knee Evaluation.
+            <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05] text-[#1B2B2A] font-bold">
+              Schedule your knee evaluation.
             </h2>
             <p className="text-base sm:text-lg font-sans-clean font-medium text-[#4B5F5D] leading-relaxed">
               Book a personal consultation or request a second opinion on your MRI scan with Dr. Manu Bora at our centres in Gurugram, New Delhi, or Mumbai.
@@ -85,7 +85,7 @@ export default function AppointmentSection() {
               CLINICAL CENTRES & LOCATIONS
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="m-carousel m-carousel-sm grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-4 bg-[#FFFFFF] rounded-xl border border-[#0F766E]/15 shadow-sm space-y-1">
                 <div className="flex items-center gap-1.5 text-xs font-bold uppercase text-[#0F766E]">
                   <MapPin className="w-3.5 h-3.5" />

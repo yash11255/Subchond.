@@ -127,15 +127,18 @@ function TreatmentImage({
     );
   }
   return (
-    <Image
-      src={src}
-      alt={alt}
-      fill
-      sizes={sizes}
-      priority={priority}
-      onError={() => setFailed(true)}
-      className="object-cover"
-    />
+    <>
+      <Image src={src} alt="" aria-hidden fill sizes="200px" className="scale-110 object-cover blur-2xl brightness-90" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        priority={priority}
+        onError={() => setFailed(true)}
+        className="object-contain"
+      />
+    </>
   );
 }
 
@@ -175,7 +178,7 @@ export default function TreatmentIndications() {
         </div>
 
         {/* Selector: one card per treatment, each with its own image */}
-        <div role="tablist" aria-label="Treatment options" className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div role="tablist" aria-label="Treatment options" className="m-carousel grid grid-cols-1 gap-4 md:grid-cols-3">
           {TREATMENT_OPTIONS.map((option) => {
             const isActive = option.id === selectedId;
             return (

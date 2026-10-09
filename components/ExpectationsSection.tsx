@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { Activity, ArrowUpRight } from "lucide-react";
+import { Activity, ArrowUpRight, BedDouble, ClipboardCheck, Dumbbell, Footprints } from "lucide-react";
 
 interface Phase {
   id: string;
@@ -11,14 +11,15 @@ interface Phase {
   time: string;
   description: string;
   image: { src: string; alt: string };
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 // confirm: add these images to /public/assets/. Suggestions are in the comments.
 // Keep the imagery calm and realistic. Avoid triumphant "cured" scenes, since results are not assured.
 const HEADER_IMAGE = {
   // suggestion: a relaxed consultation between Dr. Bora and a patient looking at a knee scan
-  src: "/assets/expect-header.jpg",
-  alt: "Dr. Bora discussing a knee scan with a patient",
+  src: "/assets/ot/ot-12.webp",
+  alt: "Dr. Manu Bora examining a patient's knee",
 };
 
 const PHASES: Phase[] = [
@@ -29,7 +30,7 @@ const PHASES: Phase[] = [
     description:
       "Procedure-related soreness may need time to settle. Follow the mobility and load instructions provided.",
     // suggestion: a person resting at home with the leg supported, or walking gently with support
-    image: { src: "/assets/expect-early.jpg", alt: "Patient resting at home with the leg supported after a knee procedure" },
+    icon: BedDouble, image: { src: "", alt: "Patient resting at home with the leg supported after a knee procedure" },
   },
   {
     id: "review",
@@ -38,7 +39,7 @@ const PHASES: Phase[] = [
     description:
       "Clinicians may review changes in pain, function and rehab progress. This is not a guaranteed benefit timeline.",
     // suggestion: a clinician and patient reviewing progress in clinic
-    image: { src: "/assets/expect-review.jpg", alt: "Clinician reviewing a patient's knee pain and function at a follow-up visit" },
+    icon: ClipboardCheck, image: { src: "", alt: "Clinician reviewing a patient's knee pain and function at a follow-up visit" },
   },
   {
     id: "rehab",
@@ -47,7 +48,7 @@ const PHASES: Phase[] = [
     description:
       "Progressive strength, walking tolerance and daily activity may continue to develop.",
     // suggestion: guided strengthening or a walking exercise with a physiotherapist
-    image: { src: "/assets/expect-rehab.jpg", alt: "Patient doing a guided knee strengthening exercise with a physiotherapist" },
+    icon: Dumbbell, image: { src: "", alt: "Patient doing a guided knee strengthening exercise with a physiotherapist" },
   },
   {
     id: "long-term",
@@ -56,7 +57,7 @@ const PHASES: Phase[] = [
     description:
       "Monitor your symptoms, function, activity goals and imaging when clinically useful.",
     // suggestion: an active but ordinary scene, such as a daily walk, or a routine imaging check
-    image: { src: "/assets/expect-longterm.jpg", alt: "Person on a regular walk, keeping active as part of long-term knee care" },
+    icon: Footprints, image: { src: "", alt: "Person on a regular walk, keeping active as part of long-term knee care" },
   },
 ];
 
@@ -138,7 +139,7 @@ export default function ExpectationsSection() {
             </a>
           </div>
 
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl bg-[#E8F1EF] shadow-[0_12px_40px_rgba(27,43,42,0.10)]">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl [&_img]:object-[center_30%] bg-[#E8F1EF] shadow-[0_12px_40px_rgba(27,43,42,0.10)]">
             <PhaseImage
               src={HEADER_IMAGE.src}
               alt={HEADER_IMAGE.alt}
@@ -149,11 +150,11 @@ export default function ExpectationsSection() {
         </header>
 
         {/* Timeline: vertical on mobile, four columns from lg. Each phase has its own image. */}
-        <ol className="relative grid grid-cols-1 gap-12 lg:grid-cols-4 lg:gap-8">
+        <ol className="m-carousel relative grid grid-cols-1 gap-12 lg:grid-cols-4 lg:gap-8">
           {/* Line that fades out, because the last phase has no end point */}
           <span
             aria-hidden="true"
-            className="absolute bottom-2 left-[11px] top-2 w-px bg-gradient-to-b from-[#0F766E]/60 to-[#0F766E]/10 lg:bottom-auto lg:left-0 lg:right-0 lg:top-[11px] lg:h-px lg:w-auto lg:bg-gradient-to-r"
+            className="max-md:hidden absolute bottom-2 left-[11px] top-2 w-px bg-gradient-to-b from-[#0F766E]/60 to-[#0F766E]/10 lg:bottom-auto lg:left-0 lg:right-0 lg:top-[11px] lg:h-px lg:w-auto lg:bg-gradient-to-r"
           />
 
           {PHASES.map((p, i) => {
@@ -175,13 +176,15 @@ export default function ExpectationsSection() {
                   {p.time}
                 </h3>
 
-                <div className="relative mt-4 aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#E8F1EF] shadow-[0_8px_28px_rgba(27,43,42,0.10)]">
-                  <PhaseImage
-                    src={p.image.src}
-                    alt={p.image.alt}
-                    sizes="(min-width: 1024px) 280px, (min-width: 640px) 60vw, 85vw"
-                  />
-                </div>
+                <motion.div
+                  initial={reduce ? false : { opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.5, delay: i * 0.12, ease: "easeOut" }}
+                  className={`mt-4 grid h-14 w-14 place-items-center rounded-2xl ${last ? "bg-[#FFF1E6] text-[#C2410C]" : "bg-[#DDF1E8] text-[#0F766E]"}`}
+                >
+                  <p.icon className="h-7 w-7" aria-hidden="true" />
+                </motion.div>
 
                 <p className="mt-4 max-w-[34ch] text-[15px] leading-relaxed text-[#3F5452]">
                   {p.description}
