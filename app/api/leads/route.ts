@@ -23,7 +23,8 @@ function supabase(pathAndQuery: string, init: RequestInit = {}) {
     ...init,
     headers: {
       apikey: SB_KEY!,
-      Authorization: `Bearer ${SB_KEY}`,
+      // Legacy JWT keys also go in Authorization; new sb_secret_ keys must only be sent as apikey
+      ...(SB_KEY!.startsWith("eyJ") ? { Authorization: `Bearer ${SB_KEY}` } : {}),
       "Content-Type": "application/json",
       ...init.headers,
     },
