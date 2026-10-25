@@ -32,7 +32,7 @@ const CALLOUTS: Record<KneeFocus, Callout> = {
   synovium: { cx: 200, cy: 290, rx: 124, ry: 66, title: "Swollen joint lining", sub: ["Causes warmth,", "swelling & stiffness"], bx: 44, by: 112 },
   meniscus: { cx: 128, cy: 302, rx: 34, ry: 14, title: "Worn meniscus", sub: ["The knee's cushion wears", "and load becomes uneven"], bx: 184, by: 388 },
   muscle: { cx: 124, cy: 182, rx: 26, ry: 58, title: "Weak thigh muscles", sub: ["Less support, so more", "load falls on the knee"], bx: 184, by: 112 },
-  injection: { cx: 146, cy: 330, rx: 42, ry: 26, title: "Treatment reaches it", sub: ["Bone-marrow concentrate", "injected into the lesion"], bx: 184, by: 388 },
+  injection: { cx: 146, cy: 330, rx: 42, ry: 26, title: "Treatment reaches it", sub: ["Adipocyte concentrate", "injected into the lesion"], bx: 184, by: 388 },
 };
 const BOX_W = 172;
 const BOX_H = 70;
@@ -321,7 +321,7 @@ export default function KneeAnimation({ focus, className = "", showCaption = fal
           />
         </g>
 
-        {/* ---------- Injection: syringe, plunger push, bone-marrow concentrate spreading ---------- */}
+        {/* ---------- Injection: syringe, plunger push, adipocyte concentrate spreading ---------- */}
         <AnimatePresence>
           {on("injection") && (
             <motion.g key="syringe" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.3 } }}>
@@ -337,7 +337,7 @@ export default function KneeAnimation({ focus, className = "", showCaption = fal
                   <rect x="62" y="327" width="10" height="10" rx="1.5" fill="#0EA5E9" />
                   {/* barrel */}
                   <rect x="-8" y="322" width="70" height="20" rx="4" fill={url("barrel")} stroke="#94A3B8" strokeWidth="1" />
-                  {/* fluid (bone marrow concentrate) shrinking as plunger moves */}
+                  {/* fluid (adipocyte concentrate) shrinking as plunger moves */}
                   <motion.rect
                     y="325" height="14" rx="2" fill="#B91C1C" opacity="0.85"
                     initial={{ x: 4, width: 56 }}

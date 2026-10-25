@@ -29,7 +29,6 @@ const slides: Slide[] = [
 const training = [
   { title: "MBBS, MS Orthopaedics", detail: "Postgraduate surgical training" },
   { title: "Sports Injury Centre, Safdarjung Hospital", detail: "Sports injury and arthroscopy training" },
-  { title: "Fellowships in France and Spain", detail: "Joint preservation and arthroscopic surgery" },
   { title: "Arthrex Master Instructor", detail: "Teaches arthroscopic and allied surgeries" },
 ];
 

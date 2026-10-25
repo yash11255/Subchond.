@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import ScrollProgress from "@/components/ScrollProgress";
 import WhatsAppReportModal from "@/components/WhatsAppReportModal";
 import KneeChatbotModal from "@/components/KneeChatbotModal";
+import MobileCarouselNav from "@/components/MobileCarouselNav";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -32,7 +33,8 @@ export const metadata: Metadata = {
     "Arthroscopy",
     "Joint Preservation",
     "Knee Pain",
-    "Subchondral Bone Marrow",
+    "Subchond Injection",
+    "Adipocyte Therapy",
   ],
 };
 
@@ -50,6 +52,7 @@ export default function RootLayout({
           {children}
           <WhatsAppReportModal />
           <KneeChatbotModal />
+          <MobileCarouselNav />
         </SmoothScroll>
       </body>
     </html>

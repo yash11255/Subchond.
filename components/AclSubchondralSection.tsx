@@ -35,7 +35,7 @@ const ACL_BENEFITS: AclBenefit[] = [
     clinicalMechanism:
       "During the pivot-shift event, the lateral femoral condyle violently impacts the posterior tibial plateau. This crushes microscopic trabeculae and pools fluid inside the subchondral bone marrow. Standard surgery only fixes the torn ligament—leaving this severe bone edema untouched to cause chronic pain.",
     whyItMatters:
-      "Targeted subchondral BMC delivery provides mesenchymal signaling cells and growth factors directly into the injured bone marrow, accelerating trabecular healing and eliminating deep joint ache within weeks.",
+      "Targeted subchondral adipocyte-cell delivery provides regenerative signaling cells and growth factors directly into the injured bone, accelerating trabecular healing and eliminating deep joint ache within weeks.",
     icon: ShieldAlert,
   },
   {
@@ -44,7 +44,7 @@ const ACL_BENEFITS: AclBenefit[] = [
     title: "Accelerates Graft-to-Bone Integration (Ligamentization)",
     shortDesc: "The ACL graft must biologically fuse with the bone tunnels to restore stability.",
     clinicalMechanism:
-      "When a tendon graft is passed through femoral and tibial bone tunnels, healing requires biological fibrocartilage transition and osteointegration. Subchondral BMC injected at tunnel apertures enriches the bone interface with autologous regenerative cells.",
+      "When a tendon graft is passed through femoral and tibial bone tunnels, healing requires biological fibrocartilage transition and osteointegration. Subchondral adipocyte therapy injected at tunnel apertures enriches the bone interface with autologous regenerative cells.",
     whyItMatters:
       "Dramatically enhances biological graft fixation, reduces tunnel widening risk, and supports earlier, safer return to high-intensity athletic conditioning.",
     icon: Zap,
@@ -55,7 +55,7 @@ const ACL_BENEFITS: AclBenefit[] = [
     title: "Halts Post-Traumatic Osteoarthritis (PTOA)",
     shortDesc: "50% of ACL patients develop knee arthritis within 10–15 years without joint protection.",
     clinicalMechanism:
-      "The violent impact damages chondrocytes and degrades the subchondral cushion. Even with a tight, stable ligament graft, the biochemical environment floods with catabolic cytokines (MMP-13, TNF-α). Subchondral BMC delivers high concentrations of IL-1Ra to neutralize destructive enzymes.",
+      "The violent impact damages chondrocytes and degrades the subchondral cushion. Even with a tight, stable ligament graft, the biochemical environment floods with catabolic cytokines (MMP-13, TNF-α). Subchondral adipocyte therapy delivers high concentrations of IL-1Ra to neutralize destructive enzymes.",
     whyItMatters:
       "Protects young athletes from becoming knee replacement candidates in their 30s and 40s. Preserves native joint cushioning for life.",
     icon: Activity,
@@ -285,7 +285,7 @@ export default function AclSubchondralSection() {
                     Untreated (often lasts 12–24 months as chronic ache)
                   </td>
                   <td className="px-6 py-4 text-[#0F766E] font-semibold">
-                    Targeted BMC injection heals bone trabeculae rapidly
+                    Targeted adipocyte injection heals bone trabeculae rapidly
                   </td>
                 </tr>
                 <tr>

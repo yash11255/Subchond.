@@ -26,16 +26,17 @@ export default function WhatsAppReportModal() {
 
   return (
     <>
-      {/* Floating Action Button (Bottom Left) */}
+      {/* Floating Action Button (Bottom Left) — compact WhatsApp logo, label from md up */}
       <button
         onClick={() => setIsOpen(true)}
-        aria-label="Share MRI Scan on WhatsApp"
-        className="fixed bottom-6 left-6 z-40 flex items-center gap-3 bg-[#25D366] hover:bg-[#20bd5a] text-white px-5 py-3.5 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 font-sans-clean font-bold text-xs sm:text-sm border-2 border-white/40"
+        aria-label="Send MRI on WhatsApp"
+        title="Send MRI on WhatsApp"
+        className="fixed bottom-5 left-4 sm:left-6 z-40 flex h-14 items-center gap-2 rounded-full bg-[#25D366] px-3.5 text-white shadow-2xl border-2 border-white/50 transition-all duration-300 hover:scale-105 hover:bg-[#20bd5a] md:px-4 font-sans-clean font-bold text-xs"
       >
-        <MessageCircle className="w-6 h-6 fill-white text-[#25D366]" />
-        <span className="uppercase tracking-wider">
-          Send MRI on WhatsApp
-        </span>
+        <svg viewBox="0 0 32 32" className="h-7 w-7 shrink-0" fill="currentColor" aria-hidden>
+          <path d="M16.04 3C8.86 3 3.03 8.82 3.03 16c0 2.3.6 4.53 1.74 6.5L3 29l6.68-1.75A12.96 12.96 0 0 0 16.04 29C23.2 29 29 23.18 29 16S23.2 3 16.04 3Zm0 23.6c-1.98 0-3.92-.53-5.61-1.53l-.4-.24-3.97 1.04 1.06-3.86-.26-.4A10.56 10.56 0 0 1 5.4 16c0-5.86 4.77-10.62 10.64-10.62 5.86 0 10.6 4.76 10.6 10.62 0 5.86-4.75 10.6-10.6 10.6Zm5.82-7.94c-.32-.16-1.88-.93-2.17-1.03-.3-.11-.5-.16-.72.16-.21.32-.82 1.03-1 1.24-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.59-1.9-1.78-2.21-.18-.32-.02-.5.14-.65.15-.14.32-.37.48-.56.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.72-1.73-.98-2.37-.26-.62-.52-.54-.72-.55h-.61c-.21 0-.56.08-.85.4-.3.31-1.12 1.09-1.12 2.66s1.15 3.09 1.3 3.3c.17.21 2.25 3.44 5.46 4.82.76.33 1.36.53 1.82.68.77.24 1.46.2 2.01.12.61-.09 1.88-.77 2.15-1.51.26-.74.26-1.38.18-1.51-.08-.13-.29-.21-.61-.37Z"/>
+        </svg>
+        <span className="hidden md:inline uppercase tracking-wider">WhatsApp</span>
       </button>
 
       {/* WhatsApp Modal */}

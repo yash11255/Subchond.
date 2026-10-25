@@ -7,7 +7,7 @@ export default function TrustBar() {
   const TRUST_ITEMS = [
     {
       icon: Award,
-      title: "MS Orthopaedics & Fellowship",
+      title: "MS Orthopaedics",
       subtitle: "Sports Medicine & Arthroscopy Specialist",
     },
     {

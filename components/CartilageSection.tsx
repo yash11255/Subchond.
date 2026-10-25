@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import SectionEyebrow from "./SectionEyebrow";
 import KneeAnimation, { type KneeFocus } from "./KneeAnimation";
 
@@ -78,6 +79,10 @@ export default function ProblemSection() {
   const [activeId, setActiveId] = useState<string>(PAIN_CAUSES[0].id);
   const activeIndex = PAIN_CAUSES.findIndex((c) => c.id === activeId);
   const active = PAIN_CAUSES[activeIndex] ?? PAIN_CAUSES[0];
+  const step = (dir: -1 | 1) =>
+    setActiveId(PAIN_CAUSES[(activeIndex + dir + PAIN_CAUSES.length) % PAIN_CAUSES.length].id);
+  const arrow =
+    "grid h-10 w-10 place-items-center rounded-full border border-[#0F766E]/20 bg-white/95 text-[#0F766E] shadow-md backdrop-blur transition hover:scale-105 hover:bg-[#E8F1EF] active:scale-95";
 
   return (
     <section
@@ -86,14 +91,14 @@ export default function ProblemSection() {
     >
       <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 items-start gap-10 px-6 md:px-12 lg:grid-cols-12 lg:gap-12">
         {/* ---------- Left: heading & intro ---------- */}
-        <div className="space-y-5 lg:col-span-4 lg:sticky lg:top-24">
+        <div className="space-y-5 lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24">
           <SectionEyebrow text="THE PROBLEM" darkBg={false} />
 
           <h2 className="font-serif-display text-4xl font-bold leading-[1.05] tracking-tight text-[#1B2B2A] sm:text-5xl md:text-[3.4rem]">
             Why does an <span className="text-[#0F766E]">arthritic knee</span> hurt?
           </h2>
 
-          <p className="font-sans-clean max-w-sm text-base font-medium leading-relaxed text-[#4B5F5D]">
+          <p className="font-sans-clean max-w-md text-base font-medium leading-relaxed text-[#4B5F5D]">
             Osteoarthritis is a whole-joint condition. Cartilage has little to
             no direct pain sensation; other tissues can contribute to pain,
             stiffness and loss of function.
@@ -111,17 +116,30 @@ export default function ProblemSection() {
 
           {/* Desktop hint */}
           <p className="hidden font-sans-clean text-xs text-[#4B5F5D]/70 lg:block">
-            Hover or tap a factor to see where it acts in the joint.
+            Hover a factor or use the arrows to see where it acts in the joint.
           </p>
         </div>
 
         {/* ---------- Center: live illustration panel ---------- */}
-        <div className="flex flex-col items-center lg:col-span-5 lg:sticky lg:top-24">
+        <div className="flex flex-col items-center lg:col-span-4 xl:col-span-5 lg:sticky lg:top-24">
           <div className="relative w-full max-w-[480px] overflow-hidden rounded-2xl border border-[#0F766E]/15 bg-white shadow-[0_24px_50px_-24px_rgba(15,118,110,0.35)]">
             {/* Image area — swaps with the active cause */}
-            <div className="relative aspect-square w-full bg-gradient-to-b from-white to-[#EEF6F4]">
+            <motion.div
+              className="relative aspect-square w-full touch-pan-y bg-gradient-to-b from-white to-[#EEF6F4]"
+              onPanEnd={(_, info) => {
+                if (Math.abs(info.offset.x) > 50) step(info.offset.x < 0 ? 1 : -1);
+              }}
+            >
               <KneeAnimation focus={FOCUS[active.id]} showCaption={false} className="p-4" />
               
+
+              {/* Prev / next */}
+              <button type="button" aria-label="Previous factor" onClick={() => step(-1)} className={`absolute left-3 top-1/2 z-10 -translate-y-1/2 ${arrow}`}>
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button type="button" aria-label="Next factor" onClick={() => step(1)} className={`absolute right-3 top-1/2 z-10 -translate-y-1/2 ${arrow}`}>
+                <ChevronRight className="h-5 w-5" />
+              </button>
 
               {/* Index badge */}
               <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-[#1B2B2A]/85 px-3 py-1.5 backdrop-blur-sm">
@@ -129,7 +147,7 @@ export default function ProblemSection() {
                   {String(activeIndex + 1).padStart(2, "0")} / 06
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Caption bar */}
             <div className="border-t border-[#0F766E]/10 bg-[#FAF8F5] px-5 py-4">
@@ -142,9 +160,10 @@ export default function ProblemSection() {
                   transition={{ duration: 0.3, ease }}
                 >
                   <p className="font-sans-clean text-sm font-bold text-[#0F766E]">
+                    <span className="mr-2 text-[#C2410C] tabular-nums">{String(activeIndex + 1).padStart(2, "0")}</span>
                     {active.title}
                   </p>
-                  <p className="font-sans-clean mt-1 text-xs leading-relaxed text-[#4B5F5D]">
+                  <p className="font-sans-clean mt-1 text-[13px] leading-relaxed text-[#4B5F5D]">
                     {active.description}
                   </p>
                 </motion.div>
@@ -153,7 +172,11 @@ export default function ProblemSection() {
           </div>
 
           {/* Progress dots */}
-          <div className="mt-4 flex items-center gap-2">
+          <div className="mt-4 flex items-center gap-3">
+            <button type="button" aria-label="Previous factor" onClick={() => step(-1)} className={`${arrow} h-8 w-8`}>
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <div className="flex items-center gap-2">
             {PAIN_CAUSES.map((cause, i) => (
               <button
                 key={cause.id}
@@ -166,6 +189,10 @@ export default function ProblemSection() {
                   }`}
               />
             ))}
+            </div>
+            <button type="button" aria-label="Next factor" onClick={() => step(1)} className={`${arrow} h-8 w-8`}>
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
 
           <p className="mt-3 flex items-center gap-2 font-sans-clean text-[11px] font-semibold text-[#0F766E]">
@@ -175,7 +202,7 @@ export default function ProblemSection() {
         </div>
 
         {/* ---------- Right: six contributing factors ---------- */}
-        <ol className="m-carousel divide-y divide-[#0F766E]/15 lg:col-span-3 lg:border-l lg:border-[#0F766E]/15 lg:pl-6">
+        <ol className="hidden divide-y divide-[#0F766E]/15 lg:col-span-4 lg:block lg:border-l lg:border-[#0F766E]/15 lg:pl-6">
           {PAIN_CAUSES.map((cause, i) => {
             const isActive = cause.id === activeId;
 
@@ -187,7 +214,7 @@ export default function ProblemSection() {
                   onMouseEnter={() => setActiveId(cause.id)}
                   onFocus={() => setActiveId(cause.id)}
                   aria-pressed={isActive}
-                  className="group flex w-full gap-4 py-4 text-left focus-visible:outline-none"
+                  className="group flex w-full gap-4 py-3.5 text-left focus-visible:outline-none"
                 >
                   <span
                     className={`pt-0.5 font-sans-clean text-base font-bold tabular-nums transition-colors duration-200 ${isActive ? "text-[#C2410C]" : "text-[#4B5F5D]"
@@ -203,14 +230,21 @@ export default function ProblemSection() {
                     >
                       {cause.title}
                     </span>
-                    <span
-                      className={`mt-1 block font-sans-clean text-sm leading-relaxed transition-colors duration-200 sm:text-[15px] ${isActive
-                          ? "font-medium text-[#1B2B2A]"
-                          : "font-normal text-[#4B5F5D]"
-                        }`}
-                    >
-                      {cause.description}
-                    </span>
+                    <AnimatePresence initial={false}>
+                      {isActive && (
+                        <motion.span
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease }}
+                          className="block overflow-hidden"
+                        >
+                          <span className="mt-1 block font-sans-clean text-sm font-medium leading-relaxed text-[#1B2B2A]">
+                            {cause.description}
+                          </span>
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
                   </span>
 
                   {/* Active marker */}

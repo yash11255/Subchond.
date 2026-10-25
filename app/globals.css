@@ -110,7 +110,19 @@ h1, h2, h3, h4, h5, h6,
   }
   .m-carousel.m-carousel-sm > * { flex-basis: 62%; }
   .m-carousel > * + * { margin-top: 0 !important; }
+  .m-carousel-wrap { position: relative; }
+  .m-carousel-btn {
+    position: absolute; top: calc(50% - 9px); transform: translateY(-50%); z-index: 5;
+    display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9999px;
+    background: rgba(255,255,255,.92); color: #0F766E; border: 1px solid rgba(15,118,110,.2);
+    box-shadow: 0 4px 14px rgba(0,0,0,.15); transition: opacity .2s;
+  }
+  .m-carousel-btn.prev { left: -6px; }
+  .m-carousel-btn.next { right: -6px; }
+  .m-carousel-btn:disabled { opacity: 0; pointer-events: none; }
 }
+/* Arrows only exist for the mobile carousel */
+@media (min-width: 768px) { .m-carousel-btn { display: none; } }
 
 /* Hide scrollbar on desktop carousels */
 .no-scrollbar { scrollbar-width: none; }

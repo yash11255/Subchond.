@@ -24,7 +24,7 @@ const evidence = [
   },
   {
     figure: "1",
-    text: "subchondral bone-marrow session, performed as a joint-preservation option.",
+    text: "Subchond injection, performed as a joint-preservation option.",
   },
 ];
 
@@ -102,7 +102,7 @@ export default function Hero() {
               animate="show"
               className="mt-6 max-w-[54ch] text-base leading-relaxed text-[#3F5452] md:text-lg"
             >
-              A single subchondral bone-marrow treatment may delay the need for knee replacement.
+              A single Subchond injection may delay the need for knee replacement.
               In two long-term studies,{" "}
               <strong className="font-semibold text-[#1B2B2A]">80–82% of treated knees</strong> had
               not been replaced at about 15 years.
@@ -161,7 +161,7 @@ export default function Hero() {
                   </span>
                 </div>
                 <p className="text-xs text-[#4B5F5D] leading-snug mt-0.5">
-                  Arthrex Master Instructor · Fellowships France & Spain
+                  Arthrex Master Instructor · Sports Medicine & Arthroscopy
                 </p>
                 <div className="flex items-center gap-2 mt-1 text-[11px] font-semibold text-[#C2410C]">
                   <span>★ 4.9/5 Rating</span>

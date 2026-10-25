@@ -56,7 +56,7 @@ export const TREATMENT_OPTIONS: TreatmentOption[] = [
     subtitle: "ACL, meniscus repair & biological joint bed preservation",
     tagline: "Repair ligaments with biological augmentation for lasting sports longevity.",
     description:
-      "Dr. Manu Bora combines precision arthroscopy with subchondral BMC biological augmentation. We reconstruct torn ACL ligaments, repair menisci, and treat underlying subchondral bone bruises to eliminate chronic ache and prevent post-traumatic osteoarthritis.",
+      "Dr. Manu Bora combines precision arthroscopy with subchondral adipocyte biological augmentation. We reconstruct torn ACL ligaments, repair menisci, and treat underlying subchondral bone bruises to eliminate chronic ache and prevent post-traumatic osteoarthritis.",
     whoItIsFor: [
       "ACL tears with accompanying subchondral bone bruises on MRI",
       "Sports injuries with meniscus tears or rotational instability",

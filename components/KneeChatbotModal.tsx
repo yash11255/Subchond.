@@ -1,20 +1,185 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { MessageSquare, X, Send, Bot, User, Sparkles } from "lucide-react";
+import { X, Send, Bot, User, Sparkles, Paperclip, FileText, CalendarCheck, Share2, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 interface Message {
   id: string;
   sender: "bot" | "user";
   text: string;
   timestamp: string;
+  attachment?: { name: string; preview?: string };
+  // Set on bot replies that analysed an upload, so we can offer booking + sharing
+  report?: { question: string; file: PendingFile };
+}
+
+type Patient = { name: string; age: string; gender: string; phone: string };
+const EMPTY_PATIENT: Patient = { name: "", age: "", gender: "", phone: "" };
+const patientComplete = (p: Patient) => p.name.trim() && p.age && p.gender && /^\+?[0-9\s-]{10,15}$/.test(p.phone);
+
+// TODO: replace with the clinic's real WhatsApp number (same as WhatsAppReportModal)
+const CLINIC_WHATSAPP = "919999999999";
+const WA_TEXT_LIMIT = 3500; // keep wa.me URLs within safe length
+
+function base64ToFile(f: PendingFile): File {
+  const bin = atob(f.data);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  const name = f.mimeType === "image/jpeg" ? f.name.replace(/\.[^.]+$/, "") + ".jpg" : f.name;
+  return new File([bytes], name, { type: f.mimeType });
+}
+
+const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+function markdownToHtml(text: string) {
+  return text
+    .split("\n")
+    .map((line) => {
+      const bullet = /^\s*[-*•]\s+/.test(line);
+      const clean = esc(line.replace(/^\s*[-*•]\s+/, "").replace(/^#+\s*/, "")).replace(
+        /\*\*([^*]+)\*\*/g,
+        "<strong>$1</strong>"
+      );
+      if (!clean.trim() || /^-{3,}$/.test(clean.trim())) return "";
+      if (bullet) return `<li class="${/^\s{2,}/.test(line) ? "sub" : ""}">${clean}</li>`;
+      return `<p>${clean}</p>`;
+    })
+    .join("");
+}
+
+// Opens a branded, print-ready report; the browser's "Save as PDF" produces the file
+function downloadPdf(msg: Message, patient: Patient) {
+  const { question, file } = msg.report!;
+  const w = window.open("", "_blank");
+  if (!w) return alert("Please allow pop-ups to download the PDF.");
+  const date = new Date().toLocaleString([], { dateStyle: "long", timeStyle: "short" });
+  const scan = file.preview
+    ? `<img class="scan" src="${file.preview}" alt="Uploaded scan" />`
+    : `<p class="file">Attached document: ${esc(file.name)}</p>`;
+  w.document.write(`<!doctype html><html><head><meta charset="utf-8" />
+<title>Knee MRI Analysis - Dr. Manu Bora</title>
+<style>
+  @page { size: A4; margin: 16mm; }
+  body { font-family: Helvetica, Arial, sans-serif; color: #1B2B2A; font-size: 12px; line-height: 1.55; margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #0F766E; padding-bottom: 12px; }
+  header img { height: 90px; max-width: 260px; object-fit: contain; }
+  header .meta { text-align: right; font-size: 10px; color: #4B5F5D; }
+  h1 { font-size: 18px; color: #7C2020; margin: 18px 0 4px; letter-spacing: .5px; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #0F766E; margin: 18px 0 6px; }
+  .box { background: #F7FAF9; border: 1px solid #0F766E33; border-radius: 8px; padding: 10px 14px; }
+  .scan { max-width: 100%; max-height: 300px; display: block; margin: 0 auto; border-radius: 6px; }
+  .analysis p { margin: 6px 0; }
+  .analysis li { margin: 3px 0 3px 18px; }
+  .analysis li.sub { margin-left: 36px; list-style: circle; }
+  footer { margin-top: 24px; border-top: 1px solid #0F766E33; padding-top: 10px; font-size: 9.5px; color: #4B5F5D; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+</style></head><body>
+<header>
+  <img src="${location.origin}/subchond_logo.png" alt="Logo" />
+  <div class="meta"><strong>Dr. Manu Bora</strong><br/>Orthopaedic Surgeon &amp; Joint Preservation Specialist<br/>Gurugram · New Delhi · Mumbai</div>
+</header>
+<h1>AI Knee MRI Analysis Report</h1>
+<div class="meta" style="font-size:10px;color:#4B5F5D">Generated: ${date}</div>
+<h2>Patient details</h2>
+<div class="box"><table style="width:100%;font-size:12px"><tr>
+  <td><strong>Name:</strong> ${esc(patient.name)}</td><td><strong>Age:</strong> ${esc(patient.age)}</td>
+  <td><strong>Gender:</strong> ${esc(patient.gender)}</td><td><strong>Phone:</strong> ${esc(patient.phone)}</td>
+</tr></table></div>
+<h2>Patient question</h2><div class="box">${esc(question)}</div>
+<h2>Uploaded report / scan</h2><div class="box">${scan}</div>
+<h2>Analysis</h2><div class="analysis"><ul style="padding:0;margin:0">${markdownToHtml(msg.text)}</ul></div>
+<footer><strong>Disclaimer:</strong> This report was generated by an AI assistant for educational purposes only. It is not a medical
+diagnosis. Please book a consultation with Dr. Manu Bora for a personalised clinical evaluation.</footer>
+<script>window.onload = () => setTimeout(() => { window.print(); }, 300);</script>
+</body></html>`);
+  w.document.close();
+}
+
+// Sends contact details + a short analysis summary to the clinic's lead list (no scan files)
+function saveLead(patient: Patient, msg: Message, kind: "pdf" | "share") {
+  fetch("/api/leads", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...patient, action: kind, question: msg.report?.question, summary: msg.text.slice(0, 1500) }),
+  }).catch(() => {});
+}
+
+async function shareOnWhatsApp(msg: Message, patient: Patient) {
+  const plain = msg.text.replace(/\*\*/g, "*").replace(/^\s*[-*]\s+/gm, "• ").replace(/^-{3,}$/gm, "");
+  let text = `Hello Dr. Bora, I'd like a review of my knee MRI.\n\n*Name:* ${patient.name}\n*Age:* ${patient.age}\n*Gender:* ${patient.gender}\n*Phone:* ${patient.phone}\n\n*My question:* ${msg.report!.question}\n\n*AI Knee Assistant analysis:*\n${plain}`;
+  if (text.length > WA_TEXT_LIMIT) text = text.slice(0, WA_TEXT_LIMIT) + "…";
+
+  // Mobile: native share sheet can send the scan file + text straight into WhatsApp
+  try {
+    const file = base64ToFile(msg.report!.file);
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ files: [file], text, title: "Knee MRI analysis" });
+      return;
+    }
+  } catch (e) {
+    if ((e as Error).name === "AbortError") return;
+  }
+  // Desktop fallback: wa.me supports text only, so ask them to attach the scan
+  const note = "\n\n(I will attach my MRI report/scan in this chat.)";
+  window.open(`https://wa.me/${CLINIC_WHATSAPP}?text=${encodeURIComponent(text + note)}`, "_blank");
+}
+
+type PendingFile = { name: string; mimeType: string; data: string; preview?: string };
+
+const now = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+// Shrink images in the browser so uploads stay small and cheap to process
+function compressImage(file: File, maxSide = 1280): Promise<PendingFile> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const url = canvas.toDataURL("image/jpeg", 0.8);
+      URL.revokeObjectURL(img.src);
+      resolve({ name: file.name, mimeType: "image/jpeg", data: url.split(",")[1], preview: url });
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+function readPdf(file: File): Promise<PendingFile> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () =>
+      resolve({ name: file.name, mimeType: "application/pdf", data: String(reader.result).split(",")[1] });
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// Minimal formatting for bot replies: **bold** and bullet lines
+function renderText(text: string) {
+  return text.split("\n").map((line, i) => {
+    const bullet = /^\s*[-*•]\s+/.test(line);
+    const clean = line.replace(/^\s*[-*•]\s+/, "").replace(/^#+\s*/, "");
+    const parts = clean.split(/(\*\*[^*]+\*\*)/g).map((p, j) =>
+      p.startsWith("**") && p.endsWith("**") ? <strong key={j}>{p.slice(2, -2)}</strong> : p
+    );
+    if (!clean.trim() || /^-{3,}$/.test(clean.trim())) return <div key={i} className="h-1.5" />;
+    return bullet ? (
+      <div key={i} className={`flex gap-1.5 ${/^\s{2,}/.test(line) ? "pl-4" : ""}`}><span className="text-[#0F766E]">•</span><span>{parts}</span></div>
+    ) : (
+      <p key={i}>{parts}</p>
+    );
+  });
 }
 
 const PRESET_PROMPTS = [
   "What is Subchondral Joint Preservation?",
   "ACL Repair vs Total Knee Replacement?",
-  "How to submit my MRI scan?",
+  "Explain my MRI report",
   "Book a second opinion with Dr. Bora",
 ];
 
@@ -23,14 +188,33 @@ const BOT_RESPONSES: Record<string, string> = {
     "Subchondral Joint Preservation is a specialized clinical approach pioneered by Dr. Manu Bora. It targets the bone marrow lesions and subchondral bone directly beneath joint cartilage to prevent premature knee replacement and preserve natural joint longevity.",
   "ACL Repair vs Total Knee Replacement?":
     "Treatment depends on whether pain originates from ligament damage, cartilage wear, or subchondral bone stress. Dr. Bora utilizes weight-bearing X-rays and 3T MRI mapping to assess whether joint preservation or minimally invasive arthroscopy can save the knee without total replacement.",
-  "How to submit my MRI scan?":
-    "You can submit your MRI reports and X-rays directly via our WhatsApp evaluation modal (button on bottom-left) or email us at info@drmanubora.com for a preliminary clinical review.",
+  "Explain my MRI report":
+    "Tap the 📎 paperclip below to upload your MRI/X-ray report (PDF or photo) or a scan image, and I'll explain the findings in simple words.",
   "Book a second opinion with Dr. Bora":
     "Dr. Manu Bora conducts second-opinion consultations at his centres in Gurugram, New Delhi, and Mumbai. Click 'ASSESS MY KNEE' in the navigation bar to schedule an evaluation.",
 };
 
-export default function KneeChatbotModal() {
-  const [isOpen, setIsOpen] = useState(false);
+// Reveals bot text word-by-word, keeps chat pinned to bottom while typing
+function TypingText({ text, onTick, onDone }: { text: string; onTick: () => void; onDone: () => void }) {
+  const words = text.split(/(\s+)/);
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (count >= words.length) return onDone();
+    const t = setTimeout(() => {
+      setCount((c) => Math.min(words.length, c + 3));
+      onTick();
+    }, 30);
+    return () => clearTimeout(t);
+  }, [count]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <>{renderText(words.slice(0, count).join(""))}</>;
+}
+
+// Pages that render their own full-screen chat (or none), so the floating launcher hides there
+const NO_LAUNCHER = ["/knee-assistant", "/admin"];
+
+export default function KneeChatbotModal({ fullPage = false }: { fullPage?: boolean }) {
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(fullPage);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -41,55 +225,123 @@ export default function KneeChatbotModal() {
     },
   ]);
 
+  const [pendingFile, setPendingFile] = useState<PendingFile | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [typingId, setTypingId] = useState<string | null>(null);
+  const [patient, setPatient] = useState<Patient>(EMPTY_PATIENT);
+  const [pendingAction, setPendingAction] = useState<{ msg: Message; kind: "pdf" | "share" } | null>(null);
+
+  const runAction = (msg: Message, kind: "pdf" | "share", p: Patient) =>
+    kind === "pdf" ? downloadPdf(msg, p) : shareOnWhatsApp(msg, p);
+  const requestAction = (msg: Message, kind: "pdf" | "share") =>
+    patientComplete(patient) ? runAction(msg, kind, patient) : setPendingAction({ msg, kind });
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const stickToBottom = useRef(true);
+  const scrollToBottom = (smooth = false) => {
+    const el = bodyRef.current;
+    if (el && stickToBottom.current) el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+  };
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = async (file?: File) => {
+    if (!file) return;
+    try {
+      if (file.type === "application/pdf") {
+        if (file.size > 4 * 1024 * 1024) return alert("Please upload a PDF under 4 MB.");
+        setPendingFile(await readPdf(file));
+      } else if (file.type.startsWith("image/")) {
+        setPendingFile(await compressImage(file));
+      } else {
+        alert("Please upload a JPG/PNG image or PDF.");
+      }
+    } catch {
+      alert("Could not read that file.");
+    }
+  };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isOpen]);
+    stickToBottom.current = true;
+    scrollToBottom(true);
+  }, [messages.length, isOpen, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSendMessage = (textToSend?: string) => {
-    const query = textToSend || input;
-    if (!query.trim()) return;
+  const addBot = (text: string, report?: Message["report"]) => {
+    const id = Date.now() + "b";
+    setTypingId(id);
+    setMessages((prev) => [...prev, { id, sender: "bot", text, timestamp: now(), report }]);
+  };
+
+  const handleSendMessage = async (textToSend?: string) => {
+    const query = (textToSend ?? input).trim();
+    const file = pendingFile;
+    if ((!query && !file) || loading || typingId) return;
 
     const userMsg: Message = {
       id: Date.now().toString(),
       sender: "user",
-      text: query,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      text: query || "Please analyse my report.",
+      timestamp: now(),
+      attachment: file ? { name: file.name, preview: file.preview } : undefined,
     };
+    const history = messages
+      .filter((m) => m.id !== "init")
+      .map((m) => ({ role: m.sender === "user" ? "user" : "model", text: m.text }));
 
     setMessages((prev) => [...prev, userMsg]);
     if (!textToSend) setInput("");
+    setPendingFile(null);
 
-    // Simulate bot response
-    setTimeout(() => {
-      let reply =
-        BOT_RESPONSES[query] ||
-        "Dr. Bora's approach focuses on identifying the root cause of knee pain—whether subchondral bone edema, cartilage fibrillation, or ligament instability. Would you like to share your MRI scan via WhatsApp for a personalized evaluation?";
+    // Preset answers need no AI call
+    if (!file && BOT_RESPONSES[query]) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        addBot(BOT_RESPONSES[query]);
+      }, 700);
+      return;
+    }
 
-      const botMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        sender: "bot",
-        text: reply,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      };
-      setMessages((prev) => [...prev, botMsg]);
-    }, 600);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/knee-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          history,
+          message: query,
+          file: file ? { mimeType: file.mimeType, data: file.data } : undefined,
+        }),
+      });
+      const data = await res.json();
+      addBot(
+        data.reply || data.error || "Something went wrong. Please try again.",
+        data.reply && file ? { question: userMsg.text, file } : undefined
+      );
+    } catch {
+      addBot("Network error. Please check your connection, or share your MRI via WhatsApp.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (!fullPage && NO_LAUNCHER.includes(pathname)) return null;
 
   return (
     <>
       {/* Floating Launcher Button (Bottom Right) */}
+      {!fullPage && (
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open Knee AI Assistant"
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-3 bg-[#7C2020] hover:bg-[#962828] text-white px-4 py-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 font-sans-clean border border-white/20"
+        className="fixed bottom-5 right-4 sm:right-6 z-40 flex h-14 items-center gap-2.5 bg-[#7C2020] hover:bg-[#962828] text-white pl-4 pr-5 rounded-full shadow-2xl ring-4 ring-[#7C2020]/15 transition-all duration-300 hover:scale-105 font-sans-clean border-2 border-white/40"
       >
-        <Sparkles className="w-5 h-5 text-white" />
-        <span className="text-xs font-semibold uppercase tracking-wider hidden sm:inline-block">
-          AI Knee Assistant
+        <Sparkles className="w-6 h-6 text-white shrink-0" />
+        <span className="flex flex-col items-start leading-tight">
+          <span className="text-[13px] font-bold uppercase tracking-wider whitespace-nowrap">AI Knee Assistant</span>
+          <span className="text-[10px] font-medium text-white/75 whitespace-nowrap">Upload MRI · Free</span>
         </span>
       </button>
+      )}
 
       {/* Floating Chatbot Window */}
       <AnimatePresence>
@@ -99,7 +351,11 @@ export default function KneeChatbotModal() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-20 right-6 z-50 w-[90vw] sm:w-[380px] h-[520px] bg-[#FFFFFF] border border-[#0F766E]/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-[#1B2B2A] font-sans-clean"
+            className={`${
+              fullPage
+                ? "relative mx-auto w-full max-w-3xl h-[calc(100dvh-10rem)] min-h-[520px]"
+                : "fixed bottom-20 z-50 w-[calc(100vw-2rem)] right-4 sm:right-6 sm:w-[420px] h-[min(640px,calc(100dvh-7rem))]"
+            } bg-[#FFFFFF] border border-[#0F766E]/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-[#1B2B2A] font-sans-clean`}
           >
             {/* Header */}
             <div className="bg-[#0F766E] p-4 flex items-center justify-between text-white">
@@ -120,6 +376,7 @@ export default function KneeChatbotModal() {
 
               <button
                 onClick={() => setIsOpen(false)}
+                hidden={fullPage}
                 className="text-white/80 hover:text-white p-1"
                 aria-label="Close Chat"
               >
@@ -128,10 +385,21 @@ export default function KneeChatbotModal() {
             </div>
 
             {/* Chat Body */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs bg-[#F7FAF9]">
+            <div
+              ref={bodyRef}
+              data-lenis-prevent
+              onScroll={(e) => {
+                const el = e.currentTarget;
+                stickToBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+              }}
+              className="flex-1 min-h-0 p-4 overflow-y-auto overscroll-contain space-y-4 text-[13px] bg-[#F7FAF9] scroll-smooth [scrollbar-width:thin] [scrollbar-color:#0F766E40_transparent]"
+            >
               {messages.map((msg) => (
-                <div
+                <motion.div
                   key={msg.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
                   className={`flex gap-2.5 ${
                     msg.sender === "user" ? "flex-row-reverse" : "flex-row"
                   }`}
@@ -145,21 +413,82 @@ export default function KneeChatbotModal() {
                   </div>
 
                   <div
-                    className={`max-w-[78%] p-3 rounded-xl leading-relaxed text-xs font-medium ${
+                    className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl leading-relaxed text-[13px] shadow-sm break-words ${
                       msg.sender === "user"
                         ? "bg-[#C2410C] text-white rounded-tr-none"
                         : "bg-[#E8F1EF] text-[#1B2B2A] border border-[#0F766E]/15 rounded-tl-none"
                     }`}
                   >
-                    <p>{msg.text}</p>
+                    {msg.attachment &&
+                      (msg.attachment.preview ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={msg.attachment.preview} alt="Uploaded scan" className="rounded-lg mb-2 max-h-40 object-contain" />
+                      ) : (
+                        <div className="flex items-center gap-1.5 mb-2 opacity-90">
+                          <FileText className="w-4 h-4" /> <span className="truncate">{msg.attachment.name}</span>
+                        </div>
+                      ))}
+                    <div className="space-y-1">{msg.sender === "bot" ? (
+                        msg.id === typingId ? (
+                          <TypingText text={msg.text} onTick={() => scrollToBottom()} onDone={() => setTypingId(null)} />
+                        ) : (
+                          renderText(msg.text)
+                        )
+                      ) : (
+                        <p>{msg.text}</p>
+                      )}</div>
+                    {msg.report && msg.id !== typingId && (
+                      <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-[#0F766E]/15">
+                        <a
+                          href="#assess"
+                          onClick={() => setIsOpen(false)}
+                          className="flex items-center gap-1.5 bg-[#7C2020] hover:bg-[#962828] text-white text-[11px] font-semibold px-3 py-2 rounded-full transition-colors"
+                        >
+                          <CalendarCheck className="w-3.5 h-3.5" /> Book Appointment
+                        </a>
+                        <button
+                          onClick={() => requestAction(msg, "share")}
+                          className="flex items-center gap-1.5 bg-[#25D366] hover:bg-[#1EBE5A] text-white text-[11px] font-semibold px-3 py-2 rounded-full transition-colors"
+                        >
+                          <Share2 className="w-3.5 h-3.5" /> Share on WhatsApp
+                        </button>
+                        <button
+                          onClick={() => requestAction(msg, "pdf")}
+                          className="flex items-center gap-1.5 bg-[#0F766E] hover:bg-[#115E59] text-white text-[11px] font-semibold px-3 py-2 rounded-full transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5" /> Download PDF
+                        </button>
+                      </div>
+                    )}
                     <span className="text-[8px] opacity-70 block text-right mt-1 font-bold">
                       {msg.timestamp}
                     </span>
                   </div>
-                </div>
+                </motion.div>
               ))}
+              {loading && (
+                <div className="flex gap-2.5 items-end">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center bg-[#0F766E] text-white">
+                    <Bot className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="bg-[#E8F1EF] border border-[#0F766E]/15 rounded-2xl rounded-tl-none px-4 py-3 flex gap-1">
+                    {[0, 1, 2].map((d) => (
+                      <motion.span
+                        key={d}
+                        className="w-2 h-2 rounded-full bg-[#0F766E]"
+                        animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
+                        transition={{ duration: 0.9, repeat: Infinity, delay: d * 0.15 }}
+                      />
+                    ))}
+                  </div>
+                  {pendingFile === null && <span className="text-[10px] text-[#4B5F5D] mb-1">Analysing…</span>}
+                </div>
+              )}
               <div ref={chatEndRef} />
             </div>
+            <p className="text-[9px] text-center text-[#4B5F5D] bg-[#F7FAF9] pb-1">
+              AI guidance only, not a diagnosis. Scans are not stored.
+            </p>
 
             {/* Quick Prompt Chips */}
             <div className="p-2 border-t border-[#0F766E]/15 bg-[#FAF8F5] overflow-x-auto flex gap-2 no-scrollbar">
@@ -174,6 +503,62 @@ export default function KneeChatbotModal() {
               ))}
             </div>
 
+            {pendingAction && (
+              <div className="absolute inset-0 z-20 bg-[#1B2B2A]/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-3">
+                <motion.form
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!patientComplete(patient)) return;
+                    runAction(pendingAction.msg, pendingAction.kind, patient);
+                    saveLead(patient, pendingAction.msg, pendingAction.kind);
+                    setPendingAction(null);
+                  }}
+                  className="w-full bg-white rounded-2xl p-4 shadow-2xl space-y-2.5 text-[13px]"
+                >
+                  <div className="flex items-center justify-between">
+                    <h5 className="font-bold text-[#0F766E]">Your details for the report</h5>
+                    <button type="button" onClick={() => setPendingAction(null)} aria-label="Cancel">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <input required placeholder="Full name" value={patient.name}
+                    onChange={(e) => setPatient({ ...patient, name: e.target.value })}
+                    className="w-full border border-[#0F766E]/25 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0F766E]" />
+                  <div className="flex gap-2">
+                    <input required type="number" min={1} max={120} placeholder="Age" value={patient.age}
+                      onChange={(e) => setPatient({ ...patient, age: e.target.value })}
+                      className="w-24 border border-[#0F766E]/25 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0F766E]" />
+                    <select required value={patient.gender}
+                      onChange={(e) => setPatient({ ...patient, gender: e.target.value })}
+                      className="flex-1 border border-[#0F766E]/25 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-[#0F766E]">
+                      <option value="" disabled>Gender</option>
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <input required type="tel" placeholder="Phone number (e.g. +91 98xxxxxx)" pattern="\+?[0-9\s-]{10,15}" value={patient.phone}
+                    onChange={(e) => setPatient({ ...patient, phone: e.target.value })}
+                    className="w-full border border-[#0F766E]/25 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0F766E]" />
+                  <button type="submit"
+                    className="w-full bg-[#0F766E] hover:bg-[#115E59] text-white font-semibold rounded-full py-2.5 transition-colors">
+                    {pendingAction.kind === "pdf" ? "Generate PDF Report" : "Continue to WhatsApp"}
+                  </button>
+                  <p className="text-[10px] text-[#4B5F5D] text-center">Shared with Dr. Bora&apos;s clinic so we can contact you. Scans are not stored.</p>
+                </motion.form>
+              </div>
+            )}
+
+            {pendingFile && (
+              <div className="px-3 pt-2 bg-white flex items-center gap-2 text-[11px] text-[#0F766E] font-semibold">
+                <FileText className="w-4 h-4 shrink-0" />
+                <span className="truncate flex-1">{pendingFile.name}</span>
+                <button onClick={() => setPendingFile(null)} aria-label="Remove file"><X className="w-4 h-4" /></button>
+              </div>
+            )}
+
             {/* Input Footer */}
             <form
               onSubmit={(e) => {
@@ -183,8 +568,26 @@ export default function KneeChatbotModal() {
               className="p-3 bg-[#FFFFFF] border-t border-[#0F766E]/15 flex items-center gap-2"
             >
               <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*,application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  handleFile(e.target.files?.[0]);
+                  e.target.value = "";
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Upload MRI report or scan"
+                className="text-[#0F766E] hover:bg-[#E8F1EF] p-2 rounded-full transition-colors"
+              >
+                <Paperclip className="w-4 h-4" />
+              </button>
+              <input
                 type="text"
-                placeholder="Ask about knee pain or MRI..."
+                placeholder={pendingFile ? "Add a question (optional)..." : "Ask about knee pain or MRI..."}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 className="flex-1 bg-[#F7FAF9] border border-[#0F766E]/25 rounded-full px-4 py-2 text-xs font-medium text-[#1B2B2A] placeholder-[#4B5F5D]/60 focus:outline-none focus:border-[#0F766E]"
@@ -192,7 +595,8 @@ export default function KneeChatbotModal() {
               <button
                 type="submit"
                 aria-label="Send message"
-                className="bg-[#0F766E] hover:bg-[#115E59] p-2.5 rounded-full text-white transition-colors shadow-md"
+                disabled={loading || !!typingId}
+                className="bg-[#0F766E] hover:bg-[#115E59] p-2.5 rounded-full text-white transition-colors shadow-md disabled:opacity-50"
               >
                 <Send className="w-4 h-4" />
               </button>

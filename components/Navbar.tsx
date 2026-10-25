@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 const NAV_ITEMS = [
-  { label: "ABOUT DOCTOR", href: "#about" },
+  { label: "ABOUT DOCTOR", href: "/about" },
   { label: "THE PROBLEM", href: "#problem" },
-  { label: "IMAGING", href: "#imaging" },
-  { label: "TREATMENTS", href: "#procedure" },
-  { label: "CLINICAL APPROACH", href: "#approach" },
+  { label: "TREATMENTS", href: "/treatments" },
+  { label: "CONDITIONS", href: "/conditions" },
   { label: "RESEARCH", href: "#research" },
   { label: "FAQS", href: "#faq" },
+  { label: "AI ASSISTANT", href: "/knee-assistant" },
 ];
 
 export default function Navbar() {
@@ -30,10 +30,15 @@ export default function Navbar() {
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
   ) => {
+    setMobileMenuOpen(false);
     if (href.startsWith("#")) {
       e.preventDefault();
-      setMobileMenuOpen(false);
       const target = document.querySelector(href);
+      // On internal pages the section lives on the home page
+      if (!target) {
+        window.location.href = "/" + href;
+        return;
+      }
       if (target) {
         if ((window as any).lenis) {
           (window as any).lenis.scrollTo(target);
@@ -63,10 +68,10 @@ export default function Navbar() {
           <Image
             src="/subchond_logo.png"
             alt="SUBCHOND™"
-            width={160}
-            height={40}
+            width={240}
+            height={60}
             priority
-            className={`h-8 w-auto transition-opacity duration-200 hover:opacity-80 ${scrolled ? "h-7" : "h-8"}`}
+            className={`w-auto transition-all duration-200 hover:opacity-80 ${scrolled ? "h-10 md:h-11" : "h-11 md:h-14"}`}
           />
         </a>
 

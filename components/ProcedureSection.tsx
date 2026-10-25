@@ -36,7 +36,7 @@ const STEPS = [
     title: "Place the substance",
     short: "Delivery",
     description:
-      "Autologous bone marrow concentrate (BMC) or platelet-rich plasma (PRP) is placed directly into the bone at the site of the lesion.",
+      "Autologous adipocyte concentrate or platelet-rich plasma (PRP) is placed directly into the bone at the site of the lesion.",
     center: 0.69,
   },
   {
@@ -260,7 +260,7 @@ function Illustration({ p, step }: { p: MotionValue<number>; step: number }) {
           }`}
       >
         <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#EA580C]" />
-        PRP or bone marrow concentrate
+        PRP or adipocyte concentrate
       </span>
     </div>
   );
@@ -447,7 +447,7 @@ export default function ProcedureSection() {
           </h2>
           <p className="max-w-[62ch] text-base leading-relaxed text-[#3F5452]">
             A subchondral injection is a minimally invasive treatment that places healing
-            substances such as platelet-rich plasma (PRP) or bone marrow concentrate directly into
+            substances such as platelet-rich plasma (PRP) or adipocyte concentrate directly into
             the bone just beneath a joint&rsquo;s cartilage.
           </p>
           {!reduce && (

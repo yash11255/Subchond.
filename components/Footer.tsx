@@ -34,27 +34,27 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm uppercase tracking-wider text-[#1B2B2A] font-bold">
               <li>
-                <a href="#approach" className="hover:text-[#0F766E] transition-colors">
+                <a href="/#approach" className="hover:text-[#0F766E] transition-colors">
                   THE APPROACH
                 </a>
               </li>
               <li>
-                <a href="#imaging" className="hover:text-[#0F766E] transition-colors">
+                <a href="/#imaging" className="hover:text-[#0F766E] transition-colors">
                   DIAGNOSTIC IMAGING
                 </a>
               </li>
               <li>
-                <a href="#problem" className="hover:text-[#0F766E] transition-colors">
+                <a href="/#problem" className="hover:text-[#0F766E] transition-colors">
                   THE PROBLEM
                 </a>
               </li>
               <li>
-                <a href="#research" className="hover:text-[#0F766E] transition-colors">
+                <a href="/#research" className="hover:text-[#0F766E] transition-colors">
                   CLINICAL RESEARCH
                 </a>
               </li>
               <li>
-                <a href="#stories" className="hover:text-[#0F766E] transition-colors">
+                <a href="/#stories" className="hover:text-[#0F766E] transition-colors">
                   PATIENT OUTCOMES
                 </a>
               </li>
@@ -84,13 +84,13 @@ export default function Footer() {
         <div className="pt-8 border-t border-[#0F766E]/15 flex flex-col md:flex-row items-center justify-between text-xs uppercase tracking-[0.16em] text-[#4B5F5D] font-medium gap-4">
           <p>&copy; {new Date().getFullYear()} DR. MANU BORA. ALL RIGHTS RESERVED.</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-[#0F766E] transition-colors">
+            <a href="/#" className="hover:text-[#0F766E] transition-colors">
               PRIVACY POLICY
             </a>
-            <a href="#" className="hover:text-[#0F766E] transition-colors">
+            <a href="/#" className="hover:text-[#0F766E] transition-colors">
               TERMS OF SERVICE
             </a>
-            <a href="#" className="hover:text-[#0F766E] transition-colors">
+            <a href="/#" className="hover:text-[#0F766E] transition-colors">
               MEDICAL DISCLAIMER
             </a>
           </div>

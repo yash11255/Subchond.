@@ -65,6 +65,7 @@ export default function Carousel({ children, slideClass = "basis-[85%] md:basis-
       onMouseLeave={() => (paused.current = false)}
       onTouchStart={() => (paused.current = true)}
     >
+      <div className="relative group">
       <div
         ref={track}
         onScroll={measure}
@@ -75,6 +76,19 @@ export default function Carousel({ children, slideClass = "basis-[85%] md:basis-
             {child}
           </div>
         ))}
+      </div>
+      {pages > 1 && (
+        <>
+          <button type="button" aria-label="Previous slide" onClick={() => go(Math.max(0, index - 1))} disabled={index === 0}
+            className="absolute left-1 top-1/2 -translate-y-1/2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-[#0F766E] shadow-lg border border-[#0F766E]/20 backdrop-blur transition hover:scale-105 disabled:opacity-0 disabled:pointer-events-none">
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button type="button" aria-label="Next slide" onClick={() => go(Math.min(pages - 1, index + 1))} disabled={index >= pages - 1}
+            className="absolute right-1 top-1/2 -translate-y-1/2 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-[#0F766E] shadow-lg border border-[#0F766E]/20 backdrop-blur transition hover:scale-105 disabled:opacity-0 disabled:pointer-events-none">
+            <ChevronRight className="h-6 w-6" />
+          </button>
+        </>
+      )}
       </div>
 
       {pages > 1 && (
