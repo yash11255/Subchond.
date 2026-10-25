@@ -1,0 +1,12 @@
+.next
+node_modules
+.agents
+.claude
+api_playground
+banner_assets
+esp_group_call
+lan_share
+streamlit_demo
+crop_assets.py
+ChatGPT Image*
+*.tsbuildinfo
