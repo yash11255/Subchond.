@@ -42,10 +42,12 @@ export default function ResearchSection() {
         </div>
 
         {/* Right Column: Research Cards */}
-        <div className="m-carousel lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {RESEARCH_STUDIES.map((study) => (
-            <ResearchCard key={study.id} study={study} />
-          ))}
+        <div className="lg:col-span-7 min-w-0">
+          <div className="m-carousel grid grid-cols-1 md:grid-cols-2 gap-6">
+            {RESEARCH_STUDIES.map((study) => (
+              <ResearchCard key={study.id} study={study} />
+            ))}
+          </div>
         </div>
 
       </div>
