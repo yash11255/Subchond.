@@ -15,7 +15,6 @@ import PatientStoriesSection from "@/components/PatientStoriesSection";
 import FaqSection from "@/components/FaqSection";
 import AppointmentSection from "@/components/AppointmentSection";
 import RehabSection from "@/components/RehabSection";
-import OtHighlights from "@/components/OtHighlights";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -34,9 +33,6 @@ export default function Home() {
 
       {/* PATIENT STORIES — social proof early */}
       <PatientStoriesSection />
-
-      {/* DR. MANU BORA IN THE OPERATING THEATRE */}
-      <OtHighlights />
 
       {/* 03 — DIAGNOSTIC IMAGING (X-RAY VS MRI) */}
       <ImagingSection />

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { NutritionIllustration, PhysioIllustration } from "./CareIllustrations";
 import { motion, useReducedMotion } from "framer-motion";
 import { Activity, ArrowUpRight } from "lucide-react";
 
@@ -30,8 +29,8 @@ const PARTNERS: CarePartner[] = [
     linkLabel: "orthosport.in",
     accent: "text-[#2F7D5B]",
     image: {
-      src: "/images/dr-manu-portrait.png",
-      alt: "Dr. Manu Bora examining a patient's knee in clinic",
+      src: "/dr-manu-bora.jpg",
+      alt: "Dr. Manu Bora, orthopaedic surgeon",
     },
   },
   {
@@ -45,8 +44,8 @@ const PARTNERS: CarePartner[] = [
     linkLabel: "threadsphysio.com",
     accent: "text-[#2F6F8F]",
     image: {
-      src: "/assets/ot/ot-12.webp",
-      alt: "Physiotherapist guiding a patient through knee rehabilitation and strengthening",
+      src: "/images/physio-seated-knee-extension.jpeg",
+      alt: "Physiotherapist guiding a seated knee extension exercise",
     },
   },
   {
@@ -60,14 +59,14 @@ const PARTNERS: CarePartner[] = [
     linkLabel: "reverseclinics.com",
     accent: "text-[#C2410C]",
     image: {
-      src: "/assets/ot/ot-10.webp",
-      alt: "Post-operative surgical care and guided recovery protocol",
+      src: "/images/reverse-clinics-joint-repair-pack.jpg",
+      alt: "Reverse Clinics Joint Repair Pack product packaging",
     },
   },
 ];
 
 /** Shows the image; falls back to a quiet placeholder if the file is missing. */
-function PartnerImage({ src, alt }: { src: string; alt: string }) {
+function PartnerImage({ src, alt, contain = false }: { src: string; alt: string; contain?: boolean }) {
   const [failed, setFailed] = useState(false);
   if (failed) {
     return (
@@ -83,7 +82,7 @@ function PartnerImage({ src, alt }: { src: string; alt: string }) {
       fill
       sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 90vw"
       onError={() => setFailed(true)}
-      className="object-cover object-[center_15%]"
+      className={contain ? "bg-white object-contain" : "object-cover object-[center_15%]"}
     />
   );
 }
@@ -130,13 +129,11 @@ export default function CareTeamSection() {
           {PARTNERS.map((p) => (
             <li key={p.id} className="flex flex-col">
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#E8F1EF] shadow-[0_12px_40px_rgba(27,43,42,0.10)]">
-                {p.id === "threads-physio" ? (
-                  <PhysioIllustration />
-                ) : p.id === "reverse-clinics" ? (
-                  <NutritionIllustration />
-                ) : (
-                  <PartnerImage src={p.image.src} alt={p.image.alt} />
-                )}
+                <PartnerImage
+                  src={p.image.src}
+                  alt={p.image.alt}
+                  contain={p.id === "reverse-clinics"}
+                />
                 <span
                   aria-hidden="true"
                   className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-sm font-semibold tabular-nums shadow-sm backdrop-blur-sm"

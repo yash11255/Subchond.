@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import KneeAnimation from "./KneeAnimation";
 
 const YT_ID = "uNbLrxSPWS0"; // Dr. Manu Bora: "Knee Replacement Avoided for 10 Years? Understanding Subchond Bone Treatment"
 const YT_ORIGIN = "https://www.youtube-nocookie.com";
@@ -31,7 +30,7 @@ const evidence = [
 export default function Hero() {
   const reduceMotion = !!useReducedMotion();
   const [mounted, setMounted] = useState(false);
-  const [mediaMode, setMediaMode] = useState<"diagram" | "video">("diagram");
+  const [mediaMode, setMediaMode] = useState<"anatomy" | "video">("anatomy");
 
   useEffect(() => {
     setMounted(true);
@@ -90,7 +89,7 @@ export default function Hero() {
               custom={1}
               initial="hidden"
               animate="show"
-              className="font-serif-display mt-3 text-[2.75rem] font-bold leading-[1.08] tracking-tight text-[#1B2B2A] sm:text-6xl xl:text-[4.25rem]"
+              className="font-serif-display mt-3 text-[2.00rem] font-bold leading-[1.08] tracking-tight text-[#1B2B2A] sm:text-6xl xl:text-[3.25rem]"
             >
               Preserving your own knee, <span className="text-[#0F766E]">for longer.</span>
             </motion.h1>
@@ -100,7 +99,7 @@ export default function Hero() {
               custom={2}
               initial="hidden"
               animate="show"
-              className="mt-6 max-w-[54ch] text-base leading-relaxed text-[#3F5452] md:text-lg"
+              className="mt-6 max-w-[54ch] text-base leading-relaxed text-[#3F5452] font-semibold md:text-lg"
             >
               A single Subchond injection may delay the need for knee replacement.
               In two long-term studies,{" "}
@@ -172,11 +171,11 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* ---------- Right: animated knee diagram / explainer video ---------- */}
+          {/* ---------- Right: annotated knee anatomy / explainer video ---------- */}
           <motion.div variants={fadeUp} custom={2} initial="hidden" animate="show">
             <div className="mb-3 flex items-center gap-2">
               {([
-                ["diagram", "How the knee hurts"],
+                ["anatomy", "Knee anatomy"],
                 ["video", "Watch Dr. Bora explain"],
               ] as const).map(([mode, label]) => (
                 <button
@@ -199,13 +198,21 @@ export default function Hero() {
               <div aria-hidden="true" className="absolute inset-0 translate-x-4 translate-y-4 rounded-3xl bg-[#0F766E]/10" />
 
               <div className="relative overflow-hidden rounded-3xl border border-[#1B2B2A]/10 bg-gradient-to-b from-white to-[#EEF6F4] shadow-[0_30px_60px_-30px_rgba(27,43,42,0.35)]">
-                {mediaMode === "diagram" ? (
-                  <div className="relative aspect-[4/5] w-full p-4 sm:aspect-square lg:aspect-[4/5]">
-                    <div
-                      aria-hidden="true"
-                      className="absolute inset-0 bg-[linear-gradient(rgba(15,118,110,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(15,118,110,0.06)_1px,transparent_1px)] bg-[size:28px_28px]"
-                    />
-                    <KneeAnimation />
+                {mediaMode === "anatomy" ? (
+                  <div className="relative aspect-[4/5] w-full bg-[#092833]">
+                    <video
+                      autoPlay={!reduceMotion}
+                      controls={reduceMotion}
+                      loop
+                      muted
+                      playsInline
+                      preload="metadata"
+                      poster="/knee-anatomy-poster.jpg"
+                      aria-label="Animated knee anatomy with labels for the femur, patella, tibia, cartilage, meniscus, ligament, and bone"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    >
+                      <source src="/knee-anatomy-annotated.mp4" type="video/mp4" />
+                    </video>
                   </div>
                 ) : (
                   <div className="relative aspect-video w-full bg-black lg:aspect-[4/5]">
@@ -225,7 +232,7 @@ export default function Hero() {
               <motion.div
                 animate={reduceMotion ? undefined : { y: [0, -8, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -left-2 top-3 z-30 scale-90 origin-top-left rounded-2xl border border-[#1B2B2A]/10 bg-white px-5 py-4 md:-left-8 md:-top-5 md:scale-100 shadow-[0_16px_40px_-16px_rgba(27,43,42,0.35)] md:-left-8"
+                className="absolute -left-2 top-3 z-30 hidden origin-top-left scale-90 rounded-2xl border border-[#1B2B2A]/10 bg-white px-5 py-4 shadow-[0_16px_40px_-16px_rgba(27,43,42,0.35)] sm:block md:-left-8 md:-top-5 md:scale-100"
               >
                 <p className="font-serif-display text-2xl font-bold text-[#0F766E]">10,000+</p>
                 <p className="mt-0.5 text-sm leading-tight text-[#4B5F5D]">

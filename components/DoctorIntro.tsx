@@ -19,7 +19,7 @@ type Slide =
 
 const slides: Slide[] = [
   { kind: "photo", src: "/dr-manu-bora.jpg", alt: "Dr. Manu Bora, Orthopaedic Surgeon and Joint Preservation Specialist", pos: "object-[center_30%]" },
-  { kind: "photo", src: "/images/dr-manu-portrait.png", alt: "Dr. Manu Bora in his clinic", pos: "object-top" },
+  // { kind: "photo", src: "/images/dr-manu-portrait.png", alt: "Dr. Manu Bora in his clinic", pos: "object-top" },
   { kind: "photo", src: "/images/dr2.png", alt: "Dr. Manu Bora examining a knee in the operating theatre", pos: "object-[center_25%]" },
   { kind: "photo", src: "/images/dr3.png", alt: "Dr. Manu Bora performing a knee procedure with his team", pos: "object-[center_30%]" },
   { kind: "photo", src: "/assets/ot/ot-01.webp", alt: "Dr. Manu Bora preparing a subchondral knee procedure", pos: "object-[center_30%]" },

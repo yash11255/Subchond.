@@ -29,7 +29,7 @@ export const APPROACH_STEPS: ApproachStep[] = [
     detail:
       "Your weight-bearing X-rays, and an MRI if one is needed, are reviewed together to look at joint space, alignment and bone marrow lesions.",
     image: "/assets/knee-bml-mri.png",
-    alt: "Clinician reviewing knee MRI and X-ray imaging",
+    alt: "Knee MRI showing tissue and bone beneath the joint surface",
   },
   {
     id: "understand",
@@ -37,8 +37,8 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Find pain contributors",
     detail:
       "Your examination and imaging are matched to your symptoms, so we know what is actually driving the pain before choosing any treatment.",
-    image: "/images/dr-manu-portrait.png",
-    alt: "Physician explaining knee findings to a patient",
+    image: "/images/physio-seated-knee-extension.jpeg",
+    alt: "Physiotherapist assessing knee movement during an examination",
   },
   {
     id: "target",
@@ -46,8 +46,8 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Choose suitable care",
     detail:
       "Dr. Bora recommends the care that fits your knee. Targeted subchondral treatment is considered only when it is appropriate for you.",
-    image: "/assets/ot/ot-08.webp",
-    alt: "Targeted subchondral treatment planning",
+    image: "/assets/hero-anatomy.png",
+    alt: "Knee illustration identifying the subchondral bone marrow lesion considered during treatment planning",
   },
   {
     id: "rehab",
@@ -55,8 +55,8 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Restore movement",
     detail:
       "Guided physiotherapy helps the knee settle and brings back your range of movement.",
-    image: "/assets/ot/ot-12.webp",
-    alt: "Patient doing guided knee rehabilitation exercises",
+    image: "/images/physio-resistance-band-knee-exercise.jpeg",
+    alt: "Physiotherapist guiding a seated resistance-band knee exercise",
   },
   {
     id: "strengthen",
@@ -64,8 +64,8 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Build capacity",
     detail:
       "Strength work and weight and load management build the capacity your knee needs for daily life and sport.",
-    image: "/assets/ot/ot-09.webp",
-    alt: "Patient doing strength training for the knee",
+    image: "/images/physio-supervised-leg-strengthening.jpeg",
+    alt: "Physiotherapist supervising leg-strengthening exercise",
   },
   {
     id: "follow-up",
@@ -73,8 +73,8 @@ export const APPROACH_STEPS: ApproachStep[] = [
     descriptor: "Measure progress",
     detail:
       "Regular check-ins track your pain and function, and the plan is adjusted to how your knee responds.",
-    image: "/dr-manu-bora.jpg",
-    alt: "Follow-up consultation reviewing progress",
+    image: "/images/physio-guided-single-leg-balance.jpeg",
+    alt: "Clinician observing a single-leg balance exercise to review knee function",
   },
 ];
 
