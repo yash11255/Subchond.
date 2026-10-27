@@ -47,7 +47,8 @@ export default function AboutPage() {
             <p className="mt-3 text-[15px] leading-relaxed">
               Cartilage has no nerves — much of arthritic knee pain comes from stressed subchondral bone. Dr. Bora&apos;s approach
               asks not only &ldquo;how much cartilage is left?&rdquo; but &ldquo;what is driving the pain?&rdquo;, and treats that
-              source directly to help patients keep their natural knee for longer.
+              source directly to help patients keep their natural knee for longer. His wider aim is to
+              help people stay in the game for as long as possible.
             </p>
           </section>
 

@@ -287,7 +287,9 @@ export default function DoctorIntro() {
               <p>
                 He teaches arthroscopic techniques to other surgeons, and trained in France and
                 Spain as well as at the Sports Injury Centre, Safdarjung Hospital. He also explains
-                common knee and shoulder problems in plain language on his YouTube channel.
+                common knee and shoulder problems in plain language on his YouTube channel. His
+                goal is to help people preserve and reclaim their physical potential, so injury and
+                ageing do not unnecessarily limit their movement and independence.
               </p>
             </div>
 
