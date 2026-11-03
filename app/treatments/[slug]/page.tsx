@@ -5,8 +5,6 @@ import { TREATMENTS } from "@/lib/pages";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export const generateStaticParams = () => TREATMENTS.map((t) => ({ slug: t.slug }));
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const page = TREATMENTS.find((t) => t.slug === slug);

@@ -36,6 +36,9 @@ export const metadata: Metadata = {
     "Subchond Injection",
     "Adipocyte Therapy",
   ],
+  verification: {
+    google: "ZI_L65Oz3Xqk8Uj-4hlYd-_XLcz0tKlMqNydc5YEbms",
+  },
 };
 
 export default function RootLayout({

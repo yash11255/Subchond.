@@ -58,6 +58,14 @@ export default function Footer() {
                   PATIENT OUTCOMES
                 </a>
               </li>
+              <li>
+                <a
+                  href="/blog"
+                  className="hover:text-[#0F766E] transition-colors"
+                >
+                  SUBCHOND BLOG
+                </a>
+              </li>
             </ul>
           </div>
 
