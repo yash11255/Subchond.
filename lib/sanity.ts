@@ -19,19 +19,8 @@ export type BlogPost = {
   author?: string;
   publishedAt?: string;
   readingTime?: number;
-  seo?: {metaTitle?: string; metaDescription?: string};
-  body?: {
-    _key: string;
-    _type: string;
-    style?: string;
-    listItem?: string;
-    children?: {_key: string; text?: string; marks?: string[]}[];
-    markDefs?: {_key: string; _type: string; href?: string}[];
-    url?: string;
-    alt?: string;
-    caption?: string;
-  }[];
-  internalLinks?: {label: string; href: string}[];
+  seo?: {metaTitle?: string; metaDescription?: string; ogImage?: string};
+  body?: Record<string, unknown>[];
   faqs?: {question: string; answer: string}[];
   references?: {title: string; publisher?: string; url: string}[];
 };
@@ -44,9 +33,8 @@ const BLOG_PROJECTION = `{
   "author": author->name,
   publishedAt,
   readingTime,
-  seo { metaTitle, metaDescription },
-  body[] { _key, _type, style, listItem, children[] { _key, text, marks }, markDefs[] { _key, _type, href }, "url": asset->url, alt, caption },
-  internalLinks[] { label, href },
+  seo { metaTitle, metaDescription, "ogImage": ogImage.asset->url },
+  body[] { ..., "url": asset->url },
   faqs[] { question, answer },
   references[] { title, publisher, url }
 }`;
