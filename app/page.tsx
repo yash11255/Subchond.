@@ -16,10 +16,38 @@ import FaqSection from "@/components/FaqSection";
 import AppointmentSection from "@/components/AppointmentSection";
 import RehabSection from "@/components/RehabSection";
 import Footer from "@/components/Footer";
+import type {Metadata} from "next";
+import JsonLd from "@/components/JsonLd";
+import {absoluteUrl, DOCTOR_ID, ORGANIZATION_ID, pageMetadata, SITE_URL, WEBSITE_ID, webPage} from "@/lib/seo";
+
+const homeTitle = "Subchond | Knee Preservation with Dr. Manu Bora";
+const homeDescription = "Explore knee conditions, imaging, joint preservation and treatment options with orthopaedic surgeon Dr. Manu Bora.";
+
+export const metadata: Metadata = pageMetadata({path: "/", title: homeTitle, description: homeDescription});
 
 export default function Home() {
   return (
     <main className="w-full bg-[#F7FAF9] text-[#1B2B2A]">
+      <JsonLd nodes={[
+        {
+          "@type": "Organization",
+          "@id": ORGANIZATION_ID,
+          name: "Subchond",
+          url: SITE_URL,
+          logo: absoluteUrl("/subchond_logo.png"),
+          description: homeDescription,
+          areaServed: ["Gurugram", "New Delhi", "Mumbai"],
+        },
+        {
+          "@type": "WebSite",
+          "@id": WEBSITE_ID,
+          url: SITE_URL,
+          name: "Subchond",
+          inLanguage: "en-IN",
+          publisher: {"@id": ORGANIZATION_ID},
+        },
+        {...webPage("/", homeTitle, homeDescription), about: {"@id": DOCTOR_ID}},
+      ]} />
       {/* 01 — HERO */}
       <Hero />
 

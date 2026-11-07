@@ -23,19 +23,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Dr. Manu Bora | Orthopaedic Surgeon & Joint Preservation Specialist",
-  description:
-    "Dr. Manu Bora is a world-renowned orthopaedic surgeon specialising in sports injuries, arthroscopy, ligament reconstruction, subchondral procedures, and joint preservation.",
-  keywords: [
-    "Dr. Manu Bora",
-    "Orthopaedic Surgeon",
-    "Sports Medicine",
-    "Arthroscopy",
-    "Joint Preservation",
-    "Knee Pain",
-    "Subchond Injection",
-    "Adipocyte Therapy",
-  ],
+  metadataBase: new URL("https://subchond.com"),
+  title: "Subchond",
+  description: "Knee health, joint preservation and treatment information from Subchond and Dr. Manu Bora.",
   verification: {
     google: "ZI_L65Oz3Xqk8Uj-4hlYd-_XLcz0tKlMqNydc5YEbms",
   },

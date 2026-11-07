@@ -5,6 +5,8 @@ import Image from "next/image";
 import Footer from "@/components/Footer";
 import BlogPortableText from "@/components/BlogPortableText";
 import {getSanityBlogPost} from "@/lib/sanity";
+import JsonLd from "@/components/JsonLd";
+import {absoluteUrl, breadcrumb, DOCTOR_ID, ORGANIZATION_ID, pageMetadata, webPage} from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -13,24 +15,53 @@ type Props = {params: Promise<{slug: string}>};
 export async function generateMetadata({params}: Props): Promise<Metadata> {
   const {slug} = await params;
   const post = await getSanityBlogPost(slug);
-  return post ? {
-    title: `${post.seo?.metaTitle || post.title} | Subchond`,
-    description: post.seo?.metaDescription || post.excerpt,
-    openGraph: {
-      title: post.seo?.metaTitle || post.title,
-      description: post.seo?.metaDescription || post.excerpt,
-      images: (post.seo?.ogImage || post.coverImage?.url) ? [{url: post.seo?.ogImage || post.coverImage!.url!, alt: post.coverImage?.alt || post.title}] : undefined,
-    },
-  } : {};
+  if (!post) return {};
+  const path = `/blog/${slug}`;
+  const title = `${post.seo?.metaTitle || post.title} | Subchond`;
+  const description = post.seo?.metaDescription || post.excerpt || post.title;
+  const image = post.seo?.ogImage || post.coverImage?.url || "/subchond_logo.png";
+  const base = pageMetadata({path, title, description, image});
+  return {
+    ...base,
+    robots: post.seo?.noIndex ? {index: false, follow: true} : undefined,
+    openGraph: {...base.openGraph, type: "article", publishedTime: post.publishedAt, modifiedTime: post.updatedAt, authors: [post.author || "Dr. Manu Bora"]},
+  };
 }
 
 export default async function BlogPostPage({params}: Props) {
   const {slug} = await params;
   const post = await getSanityBlogPost(slug);
   if (!post) notFound();
+  const path = `/blog/${slug}`;
+  const url = absoluteUrl(path);
+  const description = post.seo?.metaDescription || post.excerpt || post.title;
+  const author = post.author || "Dr. Manu Bora";
+  const articleId = `${url}#article`;
 
   return (
     <main className="min-h-screen bg-[#F7FAF9] text-[#1B2B2A]">
+      <JsonLd nodes={[
+        {...webPage(path, post.title, description, "MedicalWebPage"), mainEntity: {"@id": articleId}},
+        {
+          "@type": "BlogPosting",
+          "@id": articleId,
+          headline: post.title,
+          description,
+          url,
+          mainEntityOfPage: {"@id": `${url}#webpage`},
+          inLanguage: "en-IN",
+          isAccessibleForFree: true,
+          isPartOf: {"@id": `${absoluteUrl("/blog")}#blog`},
+          author: author === "Dr. Manu Bora" ? {"@id": DOCTOR_ID} : {"@type": "Person", name: author},
+          publisher: {"@id": ORGANIZATION_ID},
+          ...(post.publishedAt ? {datePublished: post.publishedAt} : {}),
+          ...(post.updatedAt ? {dateModified: post.updatedAt} : {}),
+          ...(post.coverImage?.url ? {image: {"@type": "ImageObject", url: post.coverImage.url, caption: post.coverImage.alt || post.title}} : {}),
+          ...(post.references?.length ? {citation: post.references.filter((reference) => reference.url).map((reference) => reference.url)} : {}),
+        },
+        ...(post.faqs?.length ? [{"@type": "FAQPage", "@id": `${url}#faq`, url, isPartOf: {"@id": `${url}#webpage`}, mainEntity: post.faqs.map((faq) => ({"@type": "Question", name: faq.question, acceptedAnswer: {"@type": "Answer", text: faq.answer}}))}] : []),
+        breadcrumb(path, [{name: "Home", path: "/"}, {name: "Blog", path: "/blog"}, {name: post.title, path}]),
+      ]} />
       <section className="border-b border-[#0F766E]/15 bg-gradient-to-br from-[#F7FAF9] via-[#FAF8F4] to-[#F6F1E9] px-6 pb-12 pt-32 md:px-10 md:pb-16 md:pt-40 lg:px-12">
         <div className="mx-auto max-w-[1120px]">
           <Link href="/blog" className="font-sans-clean text-xs font-bold uppercase tracking-[0.18em] text-[#0F766E] hover:text-[#C2410C]">← Subchond journal</Link>

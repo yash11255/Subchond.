@@ -3,18 +3,26 @@ import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import {getSanityBlogPosts} from "@/lib/sanity";
+import JsonLd from "@/components/JsonLd";
+import {absoluteUrl, breadcrumb, itemList, pageMetadata, webPage} from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Subchond Blog | Joint Preservation & Knee Health",
-  description: "Clinical education from Subchond on knee health, joint preservation, imaging and recovery.",
-};
+const title = "Subchond Blog | Joint Preservation & Knee Health";
+const description = "Clinical education from Subchond on knee health, joint preservation, imaging and recovery.";
+
+export const metadata: Metadata = pageMetadata({path: "/blog", title, description});
 
 export default async function BlogPage() {
   const posts = await getSanityBlogPosts();
   return (
     <main className="min-h-screen bg-[#F7FAF9] text-[#1B2B2A]">
+      <JsonLd nodes={[
+        {...webPage("/blog", title, description, "CollectionPage"), mainEntity: {"@id": `${absoluteUrl("/blog")}#blog`}},
+        {"@type": "Blog", "@id": `${absoluteUrl("/blog")}#blog`, name: title, description, url: absoluteUrl("/blog"), inLanguage: "en-IN", blogPost: posts.map((post) => ({"@id": `${absoluteUrl(`/blog/${post.slug}`)}#article`}))},
+        itemList("/blog", posts.map((post) => ({name: post.title, path: `/blog/${post.slug}`}))),
+        breadcrumb("/blog", [{name: "Home", path: "/"}, {name: "Blog", path: "/blog"}]),
+      ]} />
       <section className="border-b border-[#0F766E]/15 bg-gradient-to-br from-[#F7FAF9] via-[#FAF8F4] to-[#F6F1E9] px-6 pb-16 pt-36 md:px-12 md:pt-44">
         <div className="mx-auto max-w-[1100px]">
           <p className="font-sans-clean text-xs font-bold uppercase tracking-[0.22em] text-[#0F766E]">Subchond journal</p>

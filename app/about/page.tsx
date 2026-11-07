@@ -4,12 +4,13 @@ import Link from "next/link";
 import PageShell, { CtaBanner } from "@/components/PageShell";
 import { RESEARCH_STUDIES } from "@/lib/data";
 import { TREATMENTS } from "@/lib/pages";
+import JsonLd from "@/components/JsonLd";
+import {absoluteUrl, breadcrumb, DOCTOR_ID, ORGANIZATION_ID, pageMetadata, webPage} from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About Dr. Manu Bora | Orthopaedic Surgeon & Joint Preservation Specialist",
-  description:
-    "Dr. Manu Bora — MS Orthopaedics, Arthrex Master Instructor, specialist in the single Subchond injection, arthroscopy and sports injuries in Gurugram, New Delhi and Mumbai.",
-};
+const aboutTitle = "About Dr. Manu Bora | Subchond";
+const aboutDescription = "Meet Dr. Manu Bora, an orthopaedic surgeon focused on sports injuries, arthroscopy and joint preservation.";
+
+export const metadata: Metadata = pageMetadata({path: "/about", title: aboutTitle, description: aboutDescription, image: "/dr-manu-bora.jpg"});
 
 const TRAINING = [
   { title: "MBBS, MS Orthopaedics", detail: "Postgraduate surgical training" },
@@ -21,6 +22,27 @@ const CENTRES = ["Gurugram", "New Delhi", "Mumbai"];
 
 export default function AboutPage() {
   return (
+    <>
+    <JsonLd nodes={[
+      {...webPage("/about", aboutTitle, aboutDescription, "ProfilePage"), mainEntity: {"@id": DOCTOR_ID}},
+      {
+        "@type": "Person",
+        "@id": DOCTOR_ID,
+        name: "Dr. Manu Bora",
+        honorificPrefix: "Dr.",
+        jobTitle: "Orthopaedic surgeon",
+        url: absoluteUrl("/about"),
+        image: absoluteUrl("/dr-manu-bora.jpg"),
+        description: aboutDescription,
+        affiliation: {"@id": ORGANIZATION_ID},
+        knowsAbout: ["Knee joint preservation", "Arthroscopy", "Sports injuries"],
+        hasCredential: [
+          {"@type": "EducationalOccupationalCredential", name: "MBBS"},
+          {"@type": "EducationalOccupationalCredential", name: "MS Orthopaedics"},
+        ],
+      },
+      breadcrumb("/about", [{name: "Home", path: "/"}, {name: "About", path: "/about"}]),
+    ]} />
     <PageShell
       eyebrow="About Doctor"
       title="Dr. Manu Bora"
@@ -101,5 +123,6 @@ export default function AboutPage() {
       </div>
       <CtaBanner />
     </PageShell>
+    </>
   );
 }

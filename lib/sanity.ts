@@ -18,8 +18,9 @@ export type BlogPost = {
   coverImage?: {url?: string; alt?: string};
   author?: string;
   publishedAt?: string;
+  updatedAt?: string;
   readingTime?: number;
-  seo?: {metaTitle?: string; metaDescription?: string; ogImage?: string};
+  seo?: {metaTitle?: string; metaDescription?: string; ogImage?: string; noIndex?: boolean};
   body?: Record<string, unknown>[];
   faqs?: {question: string; answer: string}[];
   references?: {title: string; publisher?: string; url: string}[];
@@ -32,8 +33,9 @@ const BLOG_PROJECTION = `{
   "coverImage": coverImage { "url": asset->url, "alt": coalesce(alt, "") },
   "author": author->name,
   publishedAt,
+  "updatedAt": _updatedAt,
   readingTime,
-  seo { metaTitle, metaDescription, "ogImage": ogImage.asset->url },
+  seo { metaTitle, metaDescription, "ogImage": ogImage.asset->url, noIndex },
   body[] { ..., "url": asset->url },
   faqs[] { question, answer },
   references[] { title, publisher, url }
