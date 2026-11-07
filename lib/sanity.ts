@@ -64,3 +64,15 @@ export async function getSanityBlogPost(slug: string, publication = "dr-manu-bor
     return null;
   }
 }
+
+export function getSanitySitemapPosts(publication = "dr-manu-bora") {
+  return sanityClient.fetch<{slug: string; updatedAt: string; image?: string}[]>(
+    `*[_type == "article" && siteId == $publication && status == "published" && seo.noIndex != true && defined(slug.current)]{
+      "slug": slug.current,
+      "updatedAt": _updatedAt,
+      "image": coverImage.asset->url
+    }`,
+    {publication},
+    {cache: "no-store"},
+  );
+}
