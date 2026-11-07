@@ -20,7 +20,7 @@ export default async function BlogPage() {
           <p className="font-sans-clean text-xs font-bold uppercase tracking-[0.22em] text-[#0F766E]">Subchond journal</p>
           <h1 className="font-serif-display mt-4 max-w-3xl text-5xl font-bold leading-tight md:text-7xl">Clearer answers for healthier knees.</h1>
           <p className="font-sans-clean mt-6 max-w-2xl text-base leading-relaxed text-[#4B5F5D] md:text-lg">
-            Clinical education on joint preservation, MRI findings, treatment options and the road back to movement. New articles are being prepared for the Subchond journal.
+            Clinical education on joint preservation, MRI findings, treatment options and the road back to movement.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link href="/conditions" className="rounded-full bg-[#0F766E] px-6 py-3 font-sans-clean text-sm font-bold text-white transition hover:bg-[#115E59]">Explore conditions</Link>
