@@ -37,6 +37,9 @@ export default async function BlogPostPage({params}: Props) {
   const description = post.seo?.metaDescription || post.excerpt || post.title;
   const author = post.author || "Dr. Manu Bora";
   const articleId = `${url}#article`;
+  const publishedDate = post.publishedAt
+    ? new Intl.DateTimeFormat("en-IN", {day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata"}).format(new Date(post.publishedAt))
+    : null;
 
   return (
     <main className="min-h-screen bg-[#F7FAF9] text-[#1B2B2A]">
@@ -56,6 +59,7 @@ export default async function BlogPostPage({params}: Props) {
           publisher: {"@id": ORGANIZATION_ID},
           ...(post.publishedAt ? {datePublished: post.publishedAt} : {}),
           ...(post.updatedAt ? {dateModified: post.updatedAt} : {}),
+          ...(post.readingTime ? {timeRequired: `PT${post.readingTime}M`} : {}),
           ...(post.coverImage?.url ? {image: {"@type": "ImageObject", url: post.coverImage.url, caption: post.coverImage.alt || post.title}} : {}),
           ...(post.references?.length ? {citation: post.references.filter((reference) => reference.url).map((reference) => reference.url)} : {}),
         },
@@ -65,7 +69,13 @@ export default async function BlogPostPage({params}: Props) {
       <section className="border-b border-[#0F766E]/15 bg-gradient-to-br from-[#F7FAF9] via-[#FAF8F4] to-[#F6F1E9] px-6 pb-12 pt-32 md:px-10 md:pb-16 md:pt-40 lg:px-12">
         <div className="mx-auto max-w-[1120px]">
           <Link href="/blog" className="font-sans-clean text-xs font-bold uppercase tracking-[0.18em] text-[#0F766E] hover:text-[#C2410C]">← Subchond journal</Link>
-          <p className="font-sans-clean mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#C2410C]">{post.author || "Dr. Manu Bora"}{post.readingTime ? ` · ${post.readingTime} min read` : ""}</p>
+          <div className="font-sans-clean mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#4B5F5D] sm:gap-x-4">
+            <span>
+              By {author === "Dr. Manu Bora" ? <Link href="/about" rel="author" className="text-[#0F766E] hover:text-[#C2410C]">{author}</Link> : <span className="text-[#0F766E]">{author}</span>}
+            </span>
+            {publishedDate && <><span aria-hidden="true" className="text-[#C2410C]">·</span><time dateTime={post.publishedAt}>{publishedDate}</time></>}
+            {post.readingTime ? <><span aria-hidden="true" className="text-[#C2410C]">·</span><span>{post.readingTime} min read</span></> : null}
+          </div>
           <h1 className="font-serif-display mt-3 max-w-[1050px] text-[clamp(2.6rem,5.4vw,5.2rem)] font-bold leading-[1.08] tracking-tight">{post.title}</h1>
           {post.excerpt && <p className="font-sans-clean mt-6 max-w-[900px] text-base leading-relaxed text-[#4B5F5D] md:text-xl">{post.excerpt}</p>}
           {post.coverImage?.url && (
