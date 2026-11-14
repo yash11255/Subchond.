@@ -238,6 +238,12 @@ export default function KneeChatbotModal({ fullPage = false }: { fullPage?: bool
   const bodyRef = useRef<HTMLDivElement>(null);
   const stickToBottom = useRef(true);
   const scrollToBottom = (smooth = false) => {
+    if (fullPage) {
+      if (messages.length > 1 || loading) {
+        chatEndRef.current?.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" });
+      }
+      return;
+    }
     const el = bodyRef.current;
     if (el && stickToBottom.current) el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
   };
@@ -353,7 +359,7 @@ export default function KneeChatbotModal({ fullPage = false }: { fullPage?: bool
             transition={{ duration: 0.25 }}
             className={`${
               fullPage
-                ? "relative mx-auto w-full max-w-3xl h-[calc(100dvh-10rem)] min-h-[520px]"
+                ? "relative mx-auto w-full max-w-3xl min-h-[520px]"
                 : "fixed bottom-20 z-50 w-[calc(100vw-2rem)] right-4 sm:right-6 sm:w-[420px] h-[min(640px,calc(100dvh-7rem))]"
             } bg-[#FFFFFF] border border-[#0F766E]/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-[#1B2B2A] font-sans-clean`}
           >
@@ -387,12 +393,12 @@ export default function KneeChatbotModal({ fullPage = false }: { fullPage?: bool
             {/* Chat Body */}
             <div
               ref={bodyRef}
-              data-lenis-prevent
+              data-lenis-prevent={fullPage ? undefined : ""}
               onScroll={(e) => {
                 const el = e.currentTarget;
                 stickToBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
               }}
-              className="flex-1 min-h-0 p-4 overflow-y-auto overscroll-contain space-y-4 text-[13px] bg-[#F7FAF9] scroll-smooth [scrollbar-width:thin] [scrollbar-color:#0F766E40_transparent]"
+              className={`${fullPage ? "min-h-[280px]" : "flex-1 min-h-0 overflow-y-auto overscroll-contain scroll-smooth [scrollbar-width:thin] [scrollbar-color:#0F766E40_transparent]"} p-4 space-y-4 text-[13px] bg-[#F7FAF9]`}
             >
               {messages.map((msg) => (
                 <motion.div
