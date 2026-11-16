@@ -1,25 +1,27 @@
 "use client";
 
 import React, { useState } from "react";
-import { MessageCircle, X, Upload, Send, CheckCircle2 } from "lucide-react";
+import { MessageCircle, X, Send } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { CLINIC_PHONE } from "@/lib/contact";
 
 export default function WhatsAppReportModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [symptoms, setSymptoms] = useState("");
-  const [hasReport, setHasReport] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const text = `Hello Dr. Manu Bora's Team,%0A%0AMy Name: ${encodeURIComponent(
-      name
-    )}%0APhone: ${encodeURIComponent(phone)}%0AKnee Symptoms/Condition: ${encodeURIComponent(
-      symptoms
-    )}%0AMRI Scan Available: ${hasReport ? "Yes" : "No"}%0A%0AI would like a preliminary evaluation of my knee condition/MRI scan.`;
+    const text = `Hello Dr. Manu Bora's Team,
 
-    const whatsappUrl = `https://wa.me/919999999999?text=${text}`;
+My Name: ${name}
+Phone: ${phone}
+Knee Symptoms/Condition: ${symptoms || "Not provided"}
+
+I would like a preliminary evaluation. I will attach my MRI or X-ray in this chat if available.`;
+
+    const whatsappUrl = `https://wa.me/${CLINIC_PHONE}?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, "_blank");
     setIsOpen(false);
   };
@@ -29,8 +31,8 @@ export default function WhatsAppReportModal() {
       {/* Floating Action Button (Bottom Left) — compact WhatsApp logo, label from md up */}
       <button
         onClick={() => setIsOpen(true)}
-        aria-label="Send MRI on WhatsApp"
-        title="Send MRI on WhatsApp"
+        aria-label="Contact clinic on WhatsApp"
+        title="Contact clinic on WhatsApp"
         className="fixed bottom-5 left-4 sm:left-6 z-40 flex h-14 items-center gap-2 rounded-full bg-[#25D366] px-3.5 text-white shadow-2xl border-2 border-white/50 transition-all duration-300 hover:scale-105 hover:bg-[#20bd5a] md:px-4 font-sans-clean font-bold text-xs"
       >
         <svg viewBox="0 0 32 32" className="h-7 w-7 shrink-0" fill="currentColor" aria-hidden>
@@ -66,10 +68,10 @@ export default function WhatsAppReportModal() {
                   WHATSAPP MRI EVALUATION
                 </div>
                 <h3 className="font-serif-display text-2xl sm:text-3xl text-[#1B2B2A] uppercase font-bold leading-tight">
-                  Send Your MRI &amp; Scans
+                  Contact Us on WhatsApp
                 </h3>
                 <p className="text-xs sm:text-sm font-sans-clean text-[#4B5F5D] leading-relaxed font-medium">
-                  Share your MRI report or knee X-ray directly with Dr. Manu Bora&apos;s surgical team for a preliminary evaluation.
+                  Enter your details, then attach your MRI report or knee X-ray in the WhatsApp chat if available.
                 </p>
               </div>
 
@@ -85,12 +87,12 @@ export default function WhatsAppReportModal() {
                     placeholder="Enter your full name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-[#F7FAF9] border border-[#0F766E]/25 rounded-lg px-4 py-3 text-[#1B2B2A] placeholder-[#4B5F5D]/60 focus:outline-none focus:border-[#0F766E] transition-colors"
+                    className="w-full rounded-lg border border-[#0F766E]/25 bg-white px-4 py-3 text-[#1B2B2A] placeholder:text-[#4B5F5D]/60 focus:outline-none focus:border-[#0F766E]"
                   />
                 </div>
 
                 <div>
-                  <label className="block uppercase tracking-wider text-[#A8A39A] mb-1 font-medium text-[10px]">
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#1B2B2A]">
                     WhatsApp Phone Number
                   </label>
                   <input
@@ -99,12 +101,12 @@ export default function WhatsAppReportModal() {
                     placeholder="+91 98765 43210"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-[#080B0D] border border-white/20 rounded-lg px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#25D366] transition-colors"
+                    className="w-full rounded-lg border border-[#0F766E]/25 bg-white px-4 py-3 text-[#1B2B2A] placeholder:text-[#4B5F5D]/60 focus:outline-none focus:border-[#0F766E]"
                   />
                 </div>
 
                 <div>
-                  <label className="block uppercase tracking-wider text-[#A8A39A] mb-1 font-medium text-[10px]">
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#1B2B2A]">
                     Knee Pain / Symptoms (Optional)
                   </label>
                   <textarea
@@ -112,24 +114,8 @@ export default function WhatsAppReportModal() {
                     placeholder="e.g. Inner knee pain for 6 months, difficulty climbing stairs"
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="w-full bg-[#080B0D] border border-white/20 rounded-lg px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#25D366] transition-colors resize-none"
+                    className="w-full resize-none rounded-lg border border-[#0F766E]/25 bg-white px-4 py-3 text-[#1B2B2A] placeholder:text-[#4B5F5D]/60 focus:outline-none focus:border-[#0F766E]"
                   />
-                </div>
-
-                {/* MRI File Upload checkbox toggle */}
-                <div
-                  onClick={() => setHasReport(!hasReport)}
-                  className={`flex items-center justify-between p-3.5 border rounded-lg cursor-pointer transition-all ${
-                    hasReport
-                      ? "border-[#25D366] bg-[#25D366]/10 text-white"
-                      : "border-white/20 bg-[#080B0D] text-[#A8A39A]"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Upload className="w-4 h-4 text-[#25D366]" />
-                    <span className="text-xs font-medium">I have MRI / X-Ray scans ready to send</span>
-                  </div>
-                  {hasReport && <CheckCircle2 className="w-4 h-4 text-[#25D366]" />}
                 </div>
 
                 {/* Submit button */}
@@ -137,7 +123,7 @@ export default function WhatsAppReportModal() {
                   type="submit"
                   className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold uppercase tracking-[0.16em] py-3.5 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg mt-2"
                 >
-                  <span>CONNECT ON WHATSAPP</span>
+                  <span>CONTINUE TO WHATSAPP</span>
                   <Send className="w-4 h-4" />
                 </button>
               </form>

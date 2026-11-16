@@ -1,13 +1,21 @@
 import React from "react";
 import Image from "next/image";
+import {
+  CLINIC_EMAIL,
+  CLINIC_PHONE,
+  CLINIC_PHONE_DISPLAY,
+  GURUGRAM_ADDRESS,
+  GURUGRAM_DIRECTIONS_URL,
+  GURUGRAM_MAP_EMBED_URL,
+} from "@/lib/contact";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#E8F1EF] text-[#1B2B2A] pt-16 pb-12 border-t border-[#0F766E]/20 font-sans-clean">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12 space-y-12">
+    <footer className="w-full bg-[#E8F1EF] text-[#1B2B2A] pt-14 pb-10 border-t border-[#0F766E]/20 font-sans-clean">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12 space-y-8">
         
         {/* Top Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 items-start">
           
           {/* Brand & Specialty */}
           <div className="md:col-span-5 space-y-4">
@@ -32,7 +40,7 @@ export default function Footer() {
             <h4 className="text-xs sm:text-sm uppercase tracking-[0.16em] text-[#0F766E] font-bold">
               NAVIGATION
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm uppercase tracking-wider text-[#1B2B2A] font-bold">
+            <ul className="space-y-2 text-xs sm:text-sm uppercase tracking-wider text-[#3F5452] font-normal">
               <li>
                 <a href="/#approach" className="hover:text-[#0F766E] transition-colors">
                   THE APPROACH
@@ -70,7 +78,7 @@ export default function Footer() {
           </div>
 
           {/* Clinical Locations & Contact */}
-          <div className="md:col-span-4 space-y-3">
+          <div className="md:col-span-4 md:col-start-9 md:row-start-1 md:row-span-2 space-y-3">
             <h4 className="text-xs sm:text-sm uppercase tracking-[0.16em] text-[#0F766E] font-bold">
               CLINICAL CENTRES
             </h4>
@@ -79,11 +87,29 @@ export default function Footer() {
                 <strong className="text-[#0F766E] font-bold">Gurugram / New Delhi / Mumbai</strong>
               </p>
               <p>Consultations by prior appointment only.</p>
-              <p className="text-[#1B2B2A] font-bold">Email: info@drmanubora.com</p>
+              <address className="not-italic">
+                <span className="block font-bold">Gurugram clinic:</span>
+                <a href={GURUGRAM_DIRECTIONS_URL} target="_blank" rel="noopener noreferrer" className="hover:text-[#0F766E] hover:underline">
+                  {GURUGRAM_ADDRESS}
+                </a>
+              </address>
+              <p><a href={`tel:+${CLINIC_PHONE}`} className="font-bold text-[#0F766E] underline underline-offset-2 hover:text-[#C2410C]">Call: {CLINIC_PHONE_DISPLAY}</a></p>
+              <p><a href={`mailto:${CLINIC_EMAIL}`} className="font-bold text-[#0F766E] underline underline-offset-2 hover:text-[#C2410C]">Email: {CLINIC_EMAIL}</a></p>
               <p className="text-[#9F1239] font-bold tracking-wider">
                 Emergency Sports Injury Line Available
               </p>
             </div>
+          </div>
+
+          <div className="overflow-hidden rounded-xl border border-[#0F766E]/20 md:col-span-8 md:col-start-1 md:row-start-2">
+            <iframe
+              title="Map of the Subchond Gurugram clinic"
+              src={GURUGRAM_MAP_EMBED_URL}
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+              className="block h-44 w-full border-0 sm:h-52"
+            />
           </div>
 
         </div>

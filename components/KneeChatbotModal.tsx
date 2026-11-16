@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { X, Send, Bot, User, Sparkles, Paperclip, FileText, CalendarCheck, Share2, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { CLINIC_PHONE } from "@/lib/contact";
 import { usePathname } from "next/navigation";
 
 interface Message {
@@ -19,17 +20,8 @@ type Patient = { name: string; age: string; gender: string; phone: string };
 const EMPTY_PATIENT: Patient = { name: "", age: "", gender: "", phone: "" };
 const patientComplete = (p: Patient) => p.name.trim() && p.age && p.gender && /^\+?[0-9\s-]{10,15}$/.test(p.phone);
 
-// TODO: replace with the clinic's real WhatsApp number (same as WhatsAppReportModal)
-const CLINIC_WHATSAPP = "919999999999";
 const WA_TEXT_LIMIT = 3500; // keep wa.me URLs within safe length
 
-function base64ToFile(f: PendingFile): File {
-  const bin = atob(f.data);
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  const name = f.mimeType === "image/jpeg" ? f.name.replace(/\.[^.]+$/, "") + ".jpg" : f.name;
-  return new File([bytes], name, { type: f.mimeType });
-}
 
 const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -106,24 +98,14 @@ function saveLead(patient: Patient, msg: Message, kind: "pdf" | "share") {
   }).catch(() => {});
 }
 
-async function shareOnWhatsApp(msg: Message, patient: Patient) {
+function shareOnWhatsApp(msg: Message, patient: Patient) {
   const plain = msg.text.replace(/\*\*/g, "*").replace(/^\s*[-*]\s+/gm, "• ").replace(/^-{3,}$/gm, "");
   let text = `Hello Dr. Bora, I'd like a review of my knee MRI.\n\n*Name:* ${patient.name}\n*Age:* ${patient.age}\n*Gender:* ${patient.gender}\n*Phone:* ${patient.phone}\n\n*My question:* ${msg.report!.question}\n\n*AI Knee Assistant analysis:*\n${plain}`;
   if (text.length > WA_TEXT_LIMIT) text = text.slice(0, WA_TEXT_LIMIT) + "…";
 
-  // Mobile: native share sheet can send the scan file + text straight into WhatsApp
-  try {
-    const file = base64ToFile(msg.report!.file);
-    if (navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ files: [file], text, title: "Knee MRI analysis" });
-      return;
-    }
-  } catch (e) {
-    if ((e as Error).name === "AbortError") return;
-  }
-  // Desktop fallback: wa.me supports text only, so ask them to attach the scan
+  // Keep the recipient fixed on both mobile and desktop. Attach the scan in WhatsApp.
   const note = "\n\n(I will attach my MRI report/scan in this chat.)";
-  window.open(`https://wa.me/${CLINIC_WHATSAPP}?text=${encodeURIComponent(text + note)}`, "_blank");
+  window.open(`https://wa.me/${CLINIC_PHONE}?text=${encodeURIComponent(text + note)}`, "_blank");
 }
 
 type PendingFile = { name: string; mimeType: string; data: string; preview?: string };

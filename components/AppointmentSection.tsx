@@ -4,6 +4,11 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Calendar, Phone, Mail, MapPin, Send, CheckCircle2, ShieldAlert, Award, Star } from "lucide-react";
 import SectionEyebrow from "./SectionEyebrow";
+import {
+  CLINIC_EMAIL,
+  CLINIC_PHONE,
+  CLINIC_PHONE_DISPLAY,
+} from "@/lib/contact";
 
 export default function AppointmentSection() {
   const [submitted, setSubmitted] = useState(false);
@@ -40,6 +45,16 @@ export default function AppointmentSection() {
             <p className="text-base sm:text-lg font-sans-clean font-medium text-[#4B5F5D] leading-relaxed">
               Book a personal consultation or request a second opinion on your MRI scan with Dr. Manu Bora at our centres in Gurugram, New Delhi, or Mumbai.
             </p>
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
+              <a href={`tel:+${CLINIC_PHONE}`} className="inline-flex items-center gap-2 font-sans-clean text-base font-semibold text-[#0F766E] underline underline-offset-4 hover:text-[#C2410C]">
+                <Phone className="h-4 w-4" aria-hidden="true" />
+                Call {CLINIC_PHONE_DISPLAY}
+              </a>
+              <a href={`mailto:${CLINIC_EMAIL}`} className="inline-flex items-center gap-2 font-sans-clean text-base font-semibold text-[#0F766E] underline underline-offset-4 hover:text-[#C2410C]">
+                <Mail className="h-4 w-4" aria-hidden="true" />
+                {CLINIC_EMAIL}
+              </a>
+            </div>
           </div>
 
           {/* Dr. Manu Bora Consultation Guarantee Card */}
@@ -110,6 +125,7 @@ export default function AppointmentSection() {
                 <p className="text-xs text-[#4B5F5D] font-medium">Prior appointment only</p>
               </div>
             </div>
+
           </div>
 
           {/* Privacy Note */}

@@ -19,6 +19,7 @@ import Footer from "@/components/Footer";
 import type {Metadata} from "next";
 import JsonLd from "@/components/JsonLd";
 import {absoluteUrl, DOCTOR_ID, ORGANIZATION_ID, pageMetadata, SITE_URL, WEBSITE_ID, webPage} from "@/lib/seo";
+import {CLINIC_EMAIL, CLINIC_PHONE} from "@/lib/contact";
 
 const homeTitle = "Subchond | Knee Preservation with Dr. Manu Bora";
 const homeDescription = "Explore knee conditions, imaging, joint preservation and treatment options with orthopaedic surgeon Dr. Manu Bora.";
@@ -36,6 +37,16 @@ export default function Home() {
           url: SITE_URL,
           logo: absoluteUrl("/subchond_logo.png"),
           description: homeDescription,
+          email: CLINIC_EMAIL,
+          telephone: `+${CLINIC_PHONE}`,
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "F, 10/4, Basement Golf Course Rd, DLF Phase 1, Sector 27",
+            addressLocality: "Gurugram",
+            addressRegion: "Haryana",
+            postalCode: "122009",
+            addressCountry: "IN",
+          },
           areaServed: ["Gurugram", "New Delhi", "Mumbai"],
         },
         {
