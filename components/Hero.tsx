@@ -202,16 +202,16 @@ export default function Hero() {
                   <div className="relative aspect-[4/5] w-full bg-[#092833]">
                     <video
                       autoPlay={!reduceMotion}
-                      controls={reduceMotion}
+                      controls
                       loop
                       muted
                       playsInline
                       preload="metadata"
-                      poster="/knee-anatomy-poster.jpg"
-                      aria-label="Animated knee anatomy with labels for the femur, patella, tibia, cartilage, meniscus, ligament, and bone"
-                      className="absolute inset-0 h-full w-full object-cover"
+                      poster="/hero-poster.jpg"
+                      aria-label="SUBCHOND knee preservation explainer video"
+                      className="absolute inset-0 h-full w-full object-contain"
                     >
-                      <source src="/knee-anatomy-annotated.mp4" type="video/mp4" />
+                      <source src="/hero.mp4" type="video/mp4" />
                     </video>
                   </div>
                 ) : (

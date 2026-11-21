@@ -20,61 +20,51 @@ export interface ApproachStep {
   alt: string;
 }
 
-// confirm: review the "detail" sentences with Dr. Bora.
 export const APPROACH_STEPS: ApproachStep[] = [
   {
     id: "scan",
     name: "Scan",
     descriptor: "Assess imaging",
     detail:
-      "Your weight-bearing X-rays, and an MRI if one is needed, are reviewed together to look at joint space, alignment and bone marrow lesions.",
-    image: "/assets/knee-bml-mri.png",
-    alt: "Knee MRI showing tissue and bone beneath the joint surface",
+      "Imaging is reviewed to confirm the problem and plan the next step.",
+    image: "/images/clinical-pathway/01-scan.webp",
+    alt: "Knee MRI film being reviewed with a diagnostic pointer",
   },
   {
-    id: "understand",
-    name: "Understand",
-    descriptor: "Find pain contributors",
+    id: "hospital-admission",
+    name: "Hospital Admission",
+    descriptor: "Planned admission",
     detail:
-      "Your examination and imaging are matched to your symptoms, so we know what is actually driving the pain before choosing any treatment.",
-    image: "/images/physio-seated-knee-extension.jpeg",
-    alt: "Physiotherapist assessing knee movement during an examination",
+      "Your admission is planned in advance, usually for day care or a short stay.",
+    image: "/images/clinical-pathway/02-hospital-admission.webp",
+    alt: "Patient resting in a hospital bed during admission",
   },
   {
-    id: "target",
-    name: "Target",
-    descriptor: "Choose suitable care",
+    id: "harvest-fat",
+    name: "Harvest Fat (Fat Removal)",
+    descriptor: "Collect adipose tissue",
     detail:
-      "Dr. Bora recommends the care that fits your knee. Targeted subchondral treatment is considered only when it is appropriate for you.",
-    image: "/assets/hero-anatomy.png",
-    alt: "Knee illustration identifying the subchondral bone marrow lesion considered during treatment planning",
+      "A small amount of your own fat (adipose tissue) is collected for the procedure.",
+    image: "/assets/ot/ot-04.webp",
+    alt: "Surgical team preparing for a procedure in the operating theatre",
+  },
+  {
+    id: "subchond-injection",
+    name: "SUBCHOND Injection",
+    descriptor: "Targeted treatment",
+    detail:
+      "The prepared concentrate is injected into the targeted subchondral bone region.",
+    image: "/assets/ot/ot-09.webp",
+    alt: "Surgical team performing a procedure on a patient's knee",
   },
   {
     id: "rehab",
     name: "Rehab",
     descriptor: "Restore movement",
     detail:
-      "Guided physiotherapy helps the knee settle and brings back your range of movement.",
-    image: "/images/physio-resistance-band-knee-exercise.jpeg",
-    alt: "Physiotherapist guiding a seated resistance-band knee exercise",
-  },
-  {
-    id: "strengthen",
-    name: "Strengthen",
-    descriptor: "Build capacity",
-    detail:
-      "Strength work and weight and load management build the capacity your knee needs for daily life and sport.",
-    image: "/images/physio-supervised-leg-strengthening.jpeg",
-    alt: "Physiotherapist supervising leg-strengthening exercise",
-  },
-  {
-    id: "follow-up",
-    name: "Follow up",
-    descriptor: "Measure progress",
-    detail:
-      "Regular check-ins track your pain and function, and the plan is adjusted to how your knee responds.",
-    image: "/images/physio-guided-single-leg-balance.jpeg",
-    alt: "Clinician observing a single-leg balance exercise to review knee function",
+      "Structured physiotherapy helps restore movement, strength and daily function.",
+    image: "/images/clinical-pathway/05-rehab.webp",
+    alt: "Physiotherapist guiding a patient's seated knee rehabilitation exercise",
   },
 ];
 
@@ -141,15 +131,14 @@ export default function ClinicalApproach() {
                 id="approach-heading"
                 className="font-serif-display text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl"
               >
-                Six steps from scan to follow-up
+                Five steps from scan to rehab
               </h2>
               <p className="font-serif-display text-xl font-bold leading-snug text-[#0F766E]">
-                A physician-led joint preservation pathway, not a one-size-fits-all procedure.
+                A physician-led joint preservation pathway, planned around your knee.
               </p>
               <p className="max-w-[44ch] text-base leading-relaxed text-[#4B5F5D]">
-                Examination and imaging guide every decision. Targeted subchondral treatment is
-                considered only when it is appropriate, alongside strengthening, weight and load
-                management, and follow-up.
+                Imaging, a planned hospital admission, the procedure and structured rehabilitation
+                form the five stages of your care.
               </p>
             </div>
 
@@ -218,11 +207,11 @@ export default function ClinicalApproach() {
                 <div aria-hidden="true" className="absolute left-0 right-0 top-[7px] hidden h-px bg-[#1B2B2A]/15 lg:block" />
                 <div
                   aria-hidden="true"
-                  style={{ width: `calc(${(activeIndex / total) * 100}% + 7px)` }}
+                  style={{ width: `calc(${(activeIndex / (total - 1)) * 100}% + 7px)` }}
                   className="absolute left-0 top-[6px] hidden h-[3px] rounded-full bg-[#0F766E] transition-[width] duration-500 motion-reduce:transition-none lg:block"
                 />
 
-                <ol className="relative grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
+                <ol className="relative grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
                   {APPROACH_STEPS.map((step, i) => {
                     const isActive = i === activeIndex;
                     const isDone = i < activeIndex;

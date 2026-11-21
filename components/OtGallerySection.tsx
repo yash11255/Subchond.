@@ -6,18 +6,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import SectionEyebrow from "./SectionEyebrow";
 
 const otPhotos = [
-  { id: "ot-01", src: "/assets/ot/ot-01.webp", title: "Sterile preparation at the knee" },
-  { id: "ot-02", src: "/assets/ot/ot-02.webp", title: "Preparing the subchondral injection" },
-  { id: "ot-03", src: "/assets/ot/ot-03.webp", title: "Prepared biological sample" },
-  { id: "ot-04", src: "/assets/ot/ot-04.webp", title: "Operating theatre surgical team" },
+  { id: "ot-01", src: "/images/clinical-pathway/02-hospital-admission.webp", title: "Patient resting during admission" },
+  { id: "ot-02", src: "/images/ot-gallery/02-preparation.webp", title: "Patient prepared for the procedure" },
+  { id: "ot-03", src: "/assets/ot/ot-04.webp", title: "Operating theatre surgical team" },
+  { id: "ot-04", src: "/assets/ot/ot-07.webp", title: "Drawing up the targeted preparation" },
   { id: "ot-05", src: "/assets/ot/ot-05.webp", title: "Autologous tissue preparation" },
-  { id: "ot-06", src: "/assets/ot/ot-06.webp", title: "Imaging-assisted precision set-up" },
-  { id: "ot-07", src: "/assets/ot/ot-07.webp", title: "Drawing up the targeted preparation" },
-  { id: "ot-08", src: "/assets/ot/ot-08.webp", title: "Targeted subchondral delivery" },
-  { id: "ot-09", src: "/assets/ot/ot-09.webp", title: "Minimally invasive procedure in progress" },
-  { id: "ot-10", src: "/assets/ot/ot-10.webp", title: "Real-time imaging equipment in OT" },
-  { id: "ot-11", src: "/assets/ot/ot-11.webp", title: "Aseptic sample processing" },
-  { id: "ot-12", src: "/assets/ot/ot-12.webp", title: "Precision joint delivery" },
+  { id: "ot-06", src: "/images/ot-gallery/06-sample-handoff.webp", title: "Preparing the autologous concentrate" },
+  { id: "ot-07", src: "/assets/ot/ot-03.webp", title: "Prepared biological sample" },
+  { id: "ot-08", src: "/images/clinical-pathway/01-scan.webp", title: "Knee MRI reviewed before treatment" },
+  { id: "ot-09", src: "/images/ot-gallery/09-imaging-guidance.webp", title: "Imaging-guided knee procedure" },
+  { id: "ot-10", src: "/images/ot-gallery/10-imaging-monitors.webp", title: "Live imaging monitors" },
+  { id: "ot-11", src: "/assets/ot/ot-12.webp", title: "Precision joint delivery" },
+  { id: "ot-12", src: "/images/ot-gallery/12-targeted-injection.webp", title: "Targeted knee injection" },
 ];
 
 export default function OtGallerySection() {
@@ -34,17 +34,17 @@ export default function OtGallerySection() {
               Surgical <span className="text-[#0F766E]">Precision &amp; Setup</span>
             </h2>
             <p className="font-sans-clean text-base text-[#4B5F5D] max-w-xl">
-              Photographs directly from our operating theatre. Demonstrating sterile preparation, imaging-assisted delivery, and surgical rigor.
+              Photographs of admission, imaging, sample preparation and the operating theatre.
             </p>
           </div>
           <div className="text-xs font-sans-clean font-bold uppercase tracking-widest text-[#0F766E] bg-white px-4 py-2 rounded-full border border-[#0F766E]/20 self-start md:self-auto">
-            12 PROCEDURAL SNAPS
+            12 CARE PATHWAY PHOTOS
           </div>
         </div>
 
         {/* 12 Image Grid */}
         <div className="m-carousel m-carousel-sm grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {otPhotos.map((photo, idx) => (
+          {otPhotos.map((photo) => (
             <motion.button
               key={photo.id}
               onClick={() => setSelectedPhoto(photo)}
@@ -61,7 +61,7 @@ export default function OtGallerySection() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-2.5 flex flex-col justify-end text-left">
                 <span className="text-[10px] font-sans-clean font-bold text-white/80 uppercase">
-                  OT #{idx + 1}
+                  OT #{Number(photo.id.slice(3))}
                 </span>
                 <span className="text-xs font-sans-clean font-semibold text-white leading-tight line-clamp-2">
                   {photo.title}
@@ -73,7 +73,7 @@ export default function OtGallerySection() {
 
         {/* Caption banner */}
         <div className="p-4 rounded-xl bg-white border border-[#0F766E]/15 flex items-center justify-between text-xs font-sans-clean text-[#4B5F5D]">
-          <span>Illustrative photographs of the operating theatre environment. Individual procedure steps depend on patient requirements.</span>
+          <span>Photographs from the care pathway. Individual procedure steps depend on patient requirements.</span>
           <span className="font-bold text-[#0F766E] uppercase hidden sm:inline">SUBCHOND™ OT PROTOCOL</span>
         </div>
       </div>
