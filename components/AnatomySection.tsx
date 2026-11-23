@@ -29,8 +29,8 @@ const PARTNERS: CarePartner[] = [
     linkLabel: "orthosport.in",
     accent: "text-[#2F7D5B]",
     image: {
-      src: "/dr-manu-bora.jpg",
-      alt: "Dr. Manu Bora, orthopaedic surgeon",
+      src: "/images/partner-logos/orthosport.png",
+      alt: "Orthosport logo",
     },
   },
   {
@@ -44,8 +44,8 @@ const PARTNERS: CarePartner[] = [
     linkLabel: "threadsphysio.com",
     accent: "text-[#2F6F8F]",
     image: {
-      src: "/images/physio-seated-knee-extension.jpeg",
-      alt: "Physiotherapist guiding a seated knee extension exercise",
+      src: "/images/partner-logos/threads-physio.png",
+      alt: "Threads Physio logo",
     },
   },
   {
@@ -59,14 +59,14 @@ const PARTNERS: CarePartner[] = [
     linkLabel: "reverseclinics.com",
     accent: "text-[#C2410C]",
     image: {
-      src: "/images/reverse-clinics-joint-repair-pack.jpg",
-      alt: "Reverse Clinics Joint Repair Pack product packaging",
+      src: "/images/partner-logos/reverse-clinics.png",
+      alt: "Reverse Clinics logo",
     },
   },
 ];
 
-/** Shows the image; falls back to a quiet placeholder if the file is missing. */
-function PartnerImage({ src, alt, contain = false }: { src: string; alt: string; contain?: boolean }) {
+/** Shows the logo; falls back to a quiet placeholder if the file is missing. */
+function PartnerImage({ src, alt }: { src: string; alt: string }) {
   const [failed, setFailed] = useState(false);
   if (failed) {
     return (
@@ -82,7 +82,9 @@ function PartnerImage({ src, alt, contain = false }: { src: string; alt: string;
       fill
       sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 90vw"
       onError={() => setFailed(true)}
-      className={contain ? "bg-white object-contain" : "object-cover object-[center_15%]"}
+      className={src.includes("threads-physio")
+        ? "bg-white object-contain"
+        : "bg-white object-contain p-8 sm:p-10"}
     />
   );
 }
@@ -132,7 +134,6 @@ export default function CareTeamSection() {
                 <PartnerImage
                   src={p.image.src}
                   alt={p.image.alt}
-                  contain={p.id === "reverse-clinics"}
                 />
                 <span
                   aria-hidden="true"
