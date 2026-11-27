@@ -129,8 +129,8 @@ export default function CareTeamSection() {
         {/* Three parts of the programme */}
         <ol className="m-carousel grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
           {PARTNERS.map((p) => (
-            <li key={p.id} className="flex flex-col">
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#E8F1EF] shadow-[0_12px_40px_rgba(27,43,42,0.10)]">
+            <li key={p.id} className="partner-card group flex flex-col">
+              <div className="partner-media relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#E8F1EF] shadow-[0_12px_40px_rgba(27,43,42,0.10)]">
                 <PartnerImage
                   src={p.image.src}
                   alt={p.image.alt}

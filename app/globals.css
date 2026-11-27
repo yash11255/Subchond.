@@ -16,6 +16,9 @@
   /* Brand */
   --accent: #0F766E;         /* teal: trust, health, calm */
   --accent-hover: #115E59;
+  --support-blue: #245D7A;
+  --support-sage: #4B7256;
+  --support-peach: #FFF0E4;
 
   /* Call-to-action (Book Appointment, WhatsApp, Call) */
   --gold: #C2410C;           /* terracotta saffron: white text passes contrast */
@@ -127,3 +130,173 @@ h1, h2, h3, h4, h5, h6,
 /* Hide scrollbar on desktop carousels */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* The Google translation engine is controlled by our header selector. */
+.google-translate-source {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+body { top: 0 !important; }
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+#goog-gt-tt,
+.goog-te-balloon-frame { display: none !important; }
+
+/* Quiet motion and tactile feedback within the existing layout. */
+.nav-ink { position: relative; }
+.nav-ink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 240ms cubic-bezier(.22, 1, .36, 1);
+}
+.nav-ink:hover::after,
+.nav-ink:focus-visible::after { transform: scaleX(1); }
+.cta-lift,
+.hero-feature,
+.trust-card,
+.partner-card,
+.partner-media { transition: transform 300ms cubic-bezier(.22, 1, .36, 1), box-shadow 300ms ease, border-color 300ms ease; }
+.cta-lift:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -12px rgba(154, 52, 18, .55); }
+.cta-lift:active { transform: translateY(0) scale(.98); }
+.hero-feature:hover { transform: translateY(-3px); box-shadow: 0 16px 36px -20px rgba(15, 118, 110, .45); }
+.trust-card:hover { transform: translateY(-4px); border-color: rgba(15, 118, 110, .36); box-shadow: 0 16px 28px -18px rgba(27, 43, 42, .4); }
+.partner-card:hover { transform: translateY(-4px); }
+.partner-card:hover .partner-media { box-shadow: 0 20px 44px -18px rgba(27, 43, 42, .32); }
+.partner-card:hover .partner-media img { transform: scale(1.035); }
+.partner-media img { transition: transform 500ms cubic-bezier(.22, 1, .36, 1); }
+.hero-ambient { animation: hero-breathe 15s ease-in-out infinite alternate; }
+@keyframes hero-breathe {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: .7; }
+  to { transform: translate3d(-6%, 5%, 0) scale(1.16); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ambient { animation: none; }
+  .nav-ink::after,
+  .cta-lift,
+  .hero-feature,
+  .trust-card,
+  .partner-card,
+  .partner-media,
+  .partner-media img { transition: none; }
+  .cta-lift:hover,
+  .cta-lift:active,
+  .hero-feature:hover,
+  .trust-card:hover,
+  .partner-card:hover,
+  .partner-card:hover .partner-media img { transform: none; }
+}
+
+/* Homepage surfaces: clinical scan contours, fine measurement grids and
+   warm light add depth without changing the section layout or content. */
+#top {
+  background-image:
+    radial-gradient(ellipse 35% 55% at 94% 20%, rgba(91, 157, 181, .13), transparent 75%),
+    radial-gradient(ellipse 40% 45% at 6% 88%, rgba(232, 147, 98, .10), transparent 78%),
+    linear-gradient(135deg, #F7FAF9 6%, #FFF8F1 52%, #EAF4F4 100%);
+}
+
+#problem,
+#faq {
+  background-color: #FAF8F5;
+  background-image:
+    url("/backgrounds/scan-contours.svg"),
+    radial-gradient(ellipse 52% 70% at 92% 8%, rgba(75, 145, 150, .14), transparent 74%),
+    linear-gradient(145deg, #FFF8F0 0%, #F1F8F4 55%, #EAF3F7 100%);
+  background-repeat: no-repeat;
+  background-position: right -8rem bottom -9rem, center, center;
+  background-size: min(48vw, 650px) auto, cover, cover;
+}
+
+#stories,
+#research {
+  background-color: #FAF8F5;
+  background-image:
+    linear-gradient(rgba(15, 118, 110, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 118, 110, .035) 1px, transparent 1px),
+    radial-gradient(ellipse 60% 90% at 10% 0%, rgba(221, 124, 76, .11), transparent 72%),
+    linear-gradient(125deg, #FFF9F4, #F1F7F2 66%, #EAF2F7);
+  background-size: 34px 34px, 34px 34px, cover, cover;
+}
+
+#research {
+  background-image:
+    linear-gradient(rgba(36, 93, 122, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36, 93, 122, .035) 1px, transparent 1px),
+    radial-gradient(ellipse 60% 90% at 85% 10%, rgba(74, 139, 175, .13), transparent 72%),
+    linear-gradient(125deg, #F8FAF7, #EBF3F8 65%, #FFF8F0);
+}
+
+#imaging,
+#procedure-animation {
+  background-color: #F0F7F5;
+  background-image:
+    linear-gradient(rgba(15, 118, 110, .03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 118, 110, .03) 1px, transparent 1px),
+    radial-gradient(ellipse 50% 70% at 88% 35%, rgba(62, 131, 165, .16), transparent 76%),
+    linear-gradient(130deg, #F9FBF9, #E7F2F6 60%, #FFF4E9);
+  background-size: 46px 46px, 46px 46px, cover, cover;
+}
+
+#procedure,
+#programme,
+#expectations {
+  background-color: #F7FAF9;
+  background-image:
+    url("/backgrounds/scan-contours.svg"),
+    radial-gradient(ellipse 45% 70% at 7% 75%, rgba(94, 145, 106, .12), transparent 75%),
+    linear-gradient(115deg, #F6FAF7 10%, #FFF4E9 53%, #EAF3F7 100%);
+  background-repeat: no-repeat;
+  background-position: left -10rem top -11rem, center, center;
+  background-size: min(46vw, 620px) auto, cover, cover;
+}
+
+#approach,
+#acl-joint-preservation {
+  background-color: #F7FAF9;
+  background-image:
+    radial-gradient(ellipse 45% 55% at 85% 28%, rgba(65, 138, 158, .15), transparent 78%),
+    linear-gradient(112deg, transparent 36%, rgba(15, 118, 110, .045) 36.1%, rgba(15, 118, 110, .045) 54%, transparent 54.1%),
+    linear-gradient(145deg, #FFFFFF, #EAF4F2 62%, #FFF3E8);
+}
+
+#ot-gallery,
+#contact-appointment {
+  background-color: #E8F1EF;
+  background-image:
+    url("/backgrounds/scan-contours.svg"),
+    radial-gradient(ellipse 55% 80% at 100% 0%, rgba(57, 132, 157, .16), transparent 77%),
+    linear-gradient(135deg, #E4F3ED, #F6FAF6 51%, #FBEDE1);
+  background-repeat: no-repeat;
+  background-position: right -10rem top -10rem, center, center;
+  background-size: min(44vw, 600px) auto, cover, cover;
+}
+
+section#assess {
+  background-color: #FFF8EE;
+  background-image:
+    url("/backgrounds/scan-contours.svg"),
+    radial-gradient(ellipse 50% 90% at 85% 50%, rgba(221, 124, 76, .14), transparent 75%),
+    linear-gradient(120deg, #FFF4E7, #EDF6EF 67%, #EAF3F7);
+  background-repeat: no-repeat;
+  background-position: right -6rem center, center, center;
+  background-size: min(50vw, 680px) auto, cover, cover;
+}
+
+@media (max-width: 767px) {
+  #problem, #faq, #procedure, #programme, #expectations,
+  #ot-gallery, #contact-appointment, section#assess {
+    background-size: 330px auto, cover, cover;
+  }
+}

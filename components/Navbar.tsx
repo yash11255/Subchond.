@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const NAV_ITEMS = [
-  { label: "ABOUT DOCTOR", href: "/about" },
-  { label: "THE PROBLEM", href: "#problem" },
+  { label: "DOCTOR", href: "/about" },
+  { label: "PROBLEM", href: "#problem" },
   { label: "TREATMENTS", href: "/treatments" },
   { label: "CONDITIONS", href: "/conditions" },
   { label: "RESEARCH", href: "#research" },
@@ -62,7 +63,7 @@ export default function Navbar() {
         <a
           href="#"
           onClick={(e) => handleNavClick(e, "#top")}
-          className="flex items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0F766E]"
+          className="flex shrink-0 items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0F766E]"
           aria-label="SUBCHOND – home"
         >
           <Image
@@ -71,18 +72,18 @@ export default function Navbar() {
             width={240}
             height={60}
             priority
-            className={`w-auto transition-all duration-200 hover:opacity-80 ${scrolled ? "h-10 md:h-11" : "h-11 md:h-14"}`}
+            className={`w-auto transition-all duration-200 hover:opacity-80 ${scrolled ? "h-8 sm:h-10 md:h-11" : "h-9 sm:h-11 md:h-14"}`}
           />
         </a>
 
         {/* Desktop Nav Items */}
-        <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7">
+        <nav className="hidden xl:flex shrink-0 items-center gap-4 whitespace-nowrap 2xl:gap-6">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.label}
               href={item.href}
               onClick={(e) => handleNavClick(e, item.href)}
-              className="text-xs xl:text-sm font-sans-clean uppercase tracking-[0.14em] text-[#1B2B2A] hover:text-[#0F766E] transition-colors duration-200 font-bold"
+              className="nav-ink text-xs 2xl:text-sm font-sans-clean uppercase tracking-[0.12em] text-[#1B2B2A] hover:text-[#0F766E] transition-colors duration-200 font-bold whitespace-nowrap"
             >
               {item.label}
             </a>
@@ -90,22 +91,25 @@ export default function Navbar() {
         </nav>
 
         {/* Right Action Button */}
-        <div className="hidden md:block">
-          <a
-            href="#assess"
-            onClick={(e) => handleNavClick(e, "#assess")}
-            className="inline-flex items-center gap-2.5 text-xs xl:text-sm font-sans-clean uppercase tracking-[0.14em] bg-[#C2410C] hover:bg-[#EA580C] text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 font-bold border border-[#EA580C]/30"
-          >
-            <span>ASSESS MY KNEE</span>
-            <span className="text-base">&rarr;</span>
-          </a>
+        <div className="ml-auto flex shrink-0 items-center gap-2.5 pl-3 xl:ml-0 xl:gap-3">
+          <LanguageSwitcher />
+          <div className="hidden md:block">
+            <a
+              href="#assess"
+              onClick={(e) => handleNavClick(e, "#assess")}
+              className="cta-lift inline-flex items-center gap-2.5 whitespace-nowrap text-xs 2xl:text-sm font-sans-clean uppercase tracking-[0.14em] bg-[#C2410C] hover:bg-[#EA580C] text-white px-4 2xl:px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 font-bold border border-[#EA580C]/30"
+            >
+              <span>ASSESS MY KNEE</span>
+              <span className="text-base">&rarr;</span>
+            </a>
+          </div>
         </div>
 
         {/* Mobile Hamburger Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle Navigation Menu"
-          className="lg:hidden text-[#1B2B2A] p-2 focus:outline-none"
+          className="xl:hidden text-[#1B2B2A] p-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0F766E]"
         >
           <svg
             className="w-7 h-7"
@@ -134,7 +138,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#F7FAF9] border-b border-[#0F766E]/15 px-6 py-6 space-y-4 shadow-xl">
+        <div className="xl:hidden bg-[#F7FAF9] border-b border-[#0F766E]/15 px-6 py-6 space-y-4 shadow-xl">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.label}

@@ -55,7 +55,7 @@ export default function Hero() {
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-40 -top-40 h-[640px] w-[640px] rounded-full bg-[radial-gradient(circle,rgba(15,118,110,0.12),transparent_70%)]"
+        className="hero-ambient pointer-events-none absolute -right-40 -top-40 h-[640px] w-[640px] rounded-full bg-[radial-gradient(circle,rgba(15,118,110,0.12),transparent_70%)]"
       />
 
       <div className="relative mx-auto max-w-[1200px] px-6 pb-20 pt-28 md:px-12 md:pt-32 lg:pb-28">
@@ -116,7 +116,7 @@ export default function Hero() {
             >
               <a
                 href="#assess"
-                className="group inline-flex items-center gap-2.5 rounded-xl bg-[#C2410C] px-7 py-4 text-base font-semibold text-white shadow-sm transition-colors hover:bg-[#9A3412] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]"
+                className="cta-lift group inline-flex items-center gap-2.5 rounded-xl bg-[#C2410C] px-7 py-4 text-base font-semibold text-white shadow-sm transition-colors hover:bg-[#9A3412] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]"
               >
                 Book a knee assessment
                 <ArrowRight
@@ -139,7 +139,7 @@ export default function Hero() {
               custom={4}
               initial="hidden"
               animate="show"
-              className="mt-10 p-4 rounded-2xl bg-white/80 border border-[#0F766E]/20 shadow-sm backdrop-blur-sm flex items-center gap-4 max-w-md"
+              className="hero-feature mt-10 p-4 rounded-2xl bg-white/80 border border-[#0F766E]/20 shadow-sm backdrop-blur-sm flex items-center gap-4 max-w-md"
             >
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-[#0F766E] shadow-sm">
                 <Image
