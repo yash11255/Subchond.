@@ -163,8 +163,6 @@ export default function Hero() {
                   Arthrex Master Instructor · Sports Medicine & Arthroscopy
                 </p>
                 <div className="flex items-center gap-2 mt-1 text-[11px] font-semibold text-[#C2410C]">
-                  <span>★ 4.9/5 Rating</span>
-                  <span className="text-[#4B5F5D]/40">·</span>
                   <span className="text-[#0F766E]">10,000+ Knee & ACL Procedures</span>
                 </div>
               </div>

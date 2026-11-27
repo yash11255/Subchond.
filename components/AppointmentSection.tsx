@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Calendar, Phone, Mail, MapPin, Send, CheckCircle2, ShieldAlert, Award, Star } from "lucide-react";
+import { Calendar, Phone, Mail, MapPin, Send, CheckCircle2, ShieldAlert, Award } from "lucide-react";
 import SectionEyebrow from "./SectionEyebrow";
 import {
   CLINIC_EMAIL,
@@ -84,11 +84,6 @@ export default function AppointmentSection() {
                 Every consultation and MRI scan is reviewed directly by Dr. Manu Bora. You receive an honest, unbiased assessment whether your natural knee can be preserved.
               </p>
               <div className="flex items-center justify-center sm:justify-start gap-3 pt-1 text-[11px] font-bold text-[#C2410C]">
-                <span className="flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5 fill-[#C2410C]" />
-                  4.9★ (2,400+ Patients)
-                </span>
-                <span className="text-[#4B5F5D]/30">·</span>
                 <span className="text-[#0F766E]">10,000+ Surgeries</span>
               </div>
             </div>
